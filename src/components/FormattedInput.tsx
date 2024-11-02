@@ -1,10 +1,13 @@
+import { useState } from "react";
 import FormattedInputType from "../interfaces/FormattedInputType";
 
 function FormattedInput({ type, onKeyDown, onChange }: FormattedInputType) {
   let placeHolder: string = "Write something";
   let baseClass: string =
-    "p-2 text-wrap w-full outline-none bg-graybg text-gray-100";
+    "p-2 text-wrap w-full outline-none bg-graybg text-gray-200";
   let typeStyle: string = "";
+
+  const [focused,setFocused] = useState<boolean>(false)
 
   switch (type) {
     case "Title":
@@ -20,31 +23,31 @@ function FormattedInput({ type, onKeyDown, onChange }: FormattedInputType) {
       placeHolder = "Heading 2";
       break;
     case "p":
-      typeStyle = "font-medium text-md h-8";
+      typeStyle = "font-normal text-md h-8 text-wrap";
       placeHolder = "Write something";
       break;
     default:
-      typeStyle = "font-medium text-md h-8";
+      typeStyle = "font-normal text-md h-8 text-wrap";
       placeHolder = "Write something";
   }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && onKeyDown) {
+    if (onKeyDown) {
       onKeyDown(event);
     }
   };
 
-  
-
   return (
+
     <input
       type="text"
       className={`${baseClass} ${typeStyle}`}
-      placeholder={`${placeHolder}`}
+      placeholder={(focused || type === "Title") ? placeHolder : ""}
       autoFocus={true}
       onKeyDown={handleKeyDown}
       onChange={onChange}
-      style={{ whiteSpace: "pre-wrap", overflow: "hidden" }}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
     />
   );
 }
