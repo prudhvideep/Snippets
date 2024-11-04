@@ -18,7 +18,8 @@ export default {
       },
       colors : {
         "graybg" : "#191919", 
-        "lightgray" : "#9B9B9B"
+        "lightgray" : "#9B9B9B",
+        "drabg" : "#282A36",
       }
     },
   },
