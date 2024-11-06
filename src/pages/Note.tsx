@@ -3,10 +3,12 @@ import { v4 as uuidv4 } from "uuid";
 import { FiMenu } from "react-icons/fi";
 import { IoText } from "react-icons/io5";
 import NoteElementType from "../interfaces/NoteElementType";
-import { FaListCheck, FaCode } from "react-icons/fa6";
+import { FaCode } from "react-icons/fa6";
 import { FaListUl } from "react-icons/fa";
 import { LuHeading1, LuHeading2, LuHeading3 } from "react-icons/lu";
 import { GoDotFill } from "react-icons/go";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { gruvboxDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 function Note() {
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -62,33 +64,50 @@ function Note() {
     };
   }, [divRef]);
 
+  const getSideBarClassName = (type: string) => {
+    let typeClass = "";
+    switch (type) {
+      case "heading1":
+        typeClass = " ml-2 text-h1 font-bold text-2xl";
+        break;
+      case "heading2":
+        typeClass = " ml-4 text-h2 font-light text-xl";
+        break;
+      case "heading3":
+        typeClass = " ml-6 text-h3 font-normal text-lg";
+        break;
+    }
+
+    return typeClass;
+  };
+
   const getClassName = (type: string) => {
     const baseClass = "p-1 outline-none content-editable-placeholder";
 
     let typeClass = "";
     switch (type) {
       case "heading1":
-        typeClass = " text-gray-200 font-semibold text-3xl mt-4";
+        typeClass = " text-h1 font-semibold text-3xl mt-4 mb-3";
         break;
       case "heading2":
-        typeClass = " text-gray-300 font-normal text-2xl mt-3";
+        typeClass = " text-h2 font-normal text-2xl mt-3 mb-2";
         break;
       case "heading3":
-        typeClass = " text-gray-400 font-normal text-xl mt-2";
+        typeClass = " text-h3 font-normal text-xl mt-1";
         break;
       case "bulletList":
-        typeClass = " text-gray-200 text-lg pl-8";
+        typeClass = " text-blist text-lg pl-8";
         break;
       case "todoList":
-        typeClass = " text-gray-200 text-lg list-none pl-6";
+        typeClass = " text-tlist text-lg list-none pl-6";
         break;
       default:
-        typeClass = " text-gray-200 text-lg";
+        typeClass = " text-textcol text-[18px]";
     }
 
     return baseClass + typeClass;
   };
-  
+
   const handleSidebarNavgation = () => {
     setSideBarExapanded((prev) => !prev);
   };
@@ -366,6 +385,7 @@ function Note() {
     type: string
   ) => {
     setPopupVisible(false);
+    console.log("Event bubbled ---> ");
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       setTimeout(() => addNewNote(id, currentType || "Text"), 0);
@@ -489,6 +509,7 @@ function Note() {
   };
 
   const handleTextSelection = (event: any) => {
+    console.log("Bubbled event ---> ");
     const selection = window.getSelection();
 
     if (selection && selection.toString().length > 0) {
@@ -498,12 +519,12 @@ function Note() {
 
   return (
     <>
-      <div className="bg-drabg min-h-screen w-full h-screen flex flex-row">
+      <div className="bg-notearea min-h-screen w-full h-screen flex flex-row">
         <div
-          className={`h-full transition-all duration-300 ease-in-out ${
+          className={`h-full transition-all duration-300 ease-in-out overflow-y-auto overflow-x-hidden ${
             !sideBarExapanded
-              ? "w-12 sm:w-16 md:w-20 bg-graybg"
-              : "w-3/4 sm:w-1/2 md:w-1/3 lg:w-1/4 bg-zinc-800"
+              ? "w-12 sm:w-16 md:w-20 bg-darkbg"
+              : "w-3/4 sm:w-1/2 md:w-1/3 lg:w-1/4 bg-sidebar"
           }`}
         >
           <div className="mt-6 ml-6 w-full h-10 items-end justify-start">
@@ -512,10 +533,36 @@ function Note() {
               className="text-3xl text-gray-400 hover:cursor-pointer hover:text-gray-300 hover:scale-105"
             />
           </div>
+          <div className="mt-8 w-full flex flex-col items-center justify-center gap-4">
+            <div
+              className={`${
+                sideBarExapanded ? "block" : "hidden"
+              } w-9/10 transition-all ease-in-out duration-100`}
+            >
+              {snippetElements &&
+                snippetElements.map(
+                  (ele) =>
+                    (ele.type === "heading1" ||
+                      ele.type === "heading2" ||
+                      ele.type === "heading3") &&
+                    ele?.content &&
+                    ele.content.length > 0 && (
+                      <p
+                        key={ele.id}
+                        className={`p-2 text-ellipsis hover:cursor-pointer text-[#b9b9b9] hover:text-[#e1e0e0] ${getSideBarClassName(
+                          ele.type
+                        )}`}
+                      >
+                        {ele.content}
+                      </p>
+                    )
+                )}
+            </div>
+          </div>
         </div>
         <div
           ref={divRef}
-          className="flex-1 h-full bg-graybg flex flex-col items-center space-y-4 justify-start overflow-y-auto transition-all duration-300 ease-in-out"
+          className="flex-1 h-full bg-notearea flex flex-col items-center space-y-4 justify-start overflow-y-auto transition-all duration-300 ease-in-out"
         >
           <div
             ref={titleRef}
@@ -524,7 +571,7 @@ function Note() {
             <h1
               spellCheck={true}
               data-content-editable-leaf="true"
-              className={`outline-none font-bold text-4xl text-gray-200 ${
+              className={`outline-none font-semibold text-4xl text-gray-200 ${
                 snippetTitle === "" || snippetTitle === undefined
                   ? "content-editable-placeholder"
                   : ""
@@ -538,88 +585,95 @@ function Note() {
             />
           </div>
           <div ref={elemRef} className="mt-4 w-8/10 flex flex-col">
-            {snippetElements.map((snippet) => (
-              <div key={snippet.id} className="relative">
-                {snippet.type === "bulletList" && (
-                  <GoDotFill className="text-gray-200 absolute left-3 top-3" />
-                )}
-                <div
-                  data-id={snippet.id}
-                  data-type={snippet.type}
-                  contentEditable={true}
-                  onMouseUp={handleTextSelection}
-                  onSelect={handleTextSelection}
-                  suppressContentEditableWarning={true}
-                  className={`${getClassName(snippet.type)}`}
-                  autoFocus={true}
-                  onKeyDown={(e) =>
-                    handleSnippetKeyDown(e, snippet.id, snippet.type)
-                  }
-                  onInput={(e) => handleElementInput(e, snippet.id)}
-                />
-              </div>
-            ))}
+            {snippetElements.map((snippet) =>
+              snippet.type !== "code" ? (
+                <div key={snippet.id} className="relative">
+                  {snippet.type === "bulletList" && (
+                    <GoDotFill className="text-gray-200 absolute left-3 top-3" />
+                  )}
+                  <div
+                    data-id={snippet.id}
+                    data-type={snippet.type}
+                    contentEditable={true}
+                    onMouseUp={handleTextSelection}
+                    onSelect={handleTextSelection}
+                    suppressContentEditableWarning={true}
+                    className={`${getClassName(snippet.type)}`}
+                    autoFocus={true}
+                    onKeyDown={(e) => {
+                      if (snippet.type !== "code") {
+                        handleSnippetKeyDown(e, snippet.id, snippet.type);
+                      }
+                    }}
+                    onInput={(e) => handleElementInput(e, snippet.id)}
+                  />
+                </div>
+              ) : (
+                <SyntaxHighlighter
+                  language="java"
+                  className="rounded-md"
+                  style={gruvboxDark}
+                  showLineNumbers
+                  wrap="true"
+                  contentEditable
+                >
+                  {snippet.content}
+                </SyntaxHighlighter>
+              )
+            )}
           </div>
           {popupVisible && (
             <div
               id="typePopup"
               ref={popupRef}
-              className="absolute bg-zinc-800 border border-zinc-900 rounded-lg shadow-lg p-2 h-fit w-60 z-50"
+              className="absolute bg-[#1E1E2F] border border-[#44475A] rounded-lg shadow-md p-3 h-fit w-60 z-50"
               style={{
                 top: popupPosition.top,
                 left: popupPosition.left,
               }}
             >
-              <div className="w-full flex flex-col space-y-2">
-                <div
-                  className="p-2 flex items-center rounded-md gap-2 cursor-pointer hover:scale-105 hover:bg-zinc-700"
-                  onClick={() => handleOptionSelect("code")}
-                >
-                  <FaCode className="text-xl text-gray-400" />
-                  <span className="text-gray-400">Code</span>
-                </div>
-                <div
-                  className="p-2 flex items-center rounded-md gap-2 cursor-pointer hover:scale-105 hover:bg-zinc-700"
-                  onClick={() => handleOptionSelect("Text")}
-                >
-                  <IoText className="text-xl text-gray-400" />
-                  <span className="text-gray-400">Text</span>
-                </div>
-                <div
-                  className="p-2 flex items-center rounded-md gap-2 cursor-pointer hover:scale-105 hover:bg-zinc-700"
-                  onClick={() => handleOptionSelect("bulletList")}
-                >
-                  <FaListUl className="text-xl text-gray-400" />
-                  <span className="text-gray-400">Bulleted list</span>
-                </div>
-                <div
-                  className="p-2 flex items-center rounded-md gap-2 cursor-pointer hover:scale-105 hover:bg-zinc-700"
-                  onClick={() => handleOptionSelect("todoList")}
-                >
-                  <FaListCheck className="text-xl text-gray-400" />
-                  <span className="text-gray-400">To-do list</span>
-                </div>
-                <div
-                  className="p-2 flex items-center rounded-md gap-2 cursor-pointer hover:scale-105 hover:bg-zinc-700"
-                  onClick={() => handleOptionSelect("heading1")}
-                >
-                  <LuHeading1 className="text-xl text-gray-400" />
-                  <span className="text-gray-400">Heading 1</span>
-                </div>
-                <div
-                  className="p-2 flex items-center rounded-md gap-2 cursor-pointer hover:scale-105 hover:bg-zinc-700"
-                  onClick={() => handleOptionSelect("heading2")}
-                >
-                  <LuHeading2 className="text-xl text-gray-400" />
-                  <span className="text-gray-400">Heading 2</span>
-                </div>
-                <div
-                  className="p-2 flex items-center rounded-md gap-2 cursor-pointer hover:scale-105 hover:bg-zinc-700"
-                  onClick={() => handleOptionSelect("heading3")}
-                >
-                  <LuHeading3 className="text-xl text-gray-400" />
-                  <span className="text-gray-400">Heading 3</span>
-                </div>
+              <div className="w-full flex flex-col items-stretch space-y-2">
+                {[
+                  {
+                    icon: <FaCode className="text-xl text-[#fa6381]" />,
+                    label: "Code",
+                    value: "code",
+                  },
+                  {
+                    icon: <LuHeading1 className="text-xl text-[#a974e5]" />,
+                    label: "Heading 1",
+                    value: "heading1",
+                  },
+                  {
+                    icon: <LuHeading2 className="text-xl text-[#a974e5]" />,
+                    label: "Heading 2",
+                    value: "heading2",
+                  },
+                  {
+                    icon: <LuHeading3 className="text-xl text-[#a974e5]" />,
+                    label: "Heading 3",
+                    value: "heading3",
+                  },
+                  {
+                    icon: <IoText className="text-xl text-[#a974e5]" />,
+                    label: "Text",
+                    value: "Text",
+                  },
+                  {
+                    icon: <FaListUl className="text-xl text-[#757574]" />,
+                    label: "Bulleted list",
+                    value: "bulletList",
+                  },
+                ].map(({ icon, label, value }) => (
+                  <div
+                    key={value}
+                    className="p-3 flex items-center rounded-md gap-2 cursor-pointer hover:scale-105 hover:bg-[#4E4E62] transition duration-200"
+                    onClick={() => handleOptionSelect(value)}
+                  >
+                    {icon}
+                    <span className="text-[#d7d7c7]">{label}</span>
+                  </div>
+                ))}
               </div>
             </div>
           )}
