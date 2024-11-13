@@ -3,6 +3,10 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        mono: ['"JetBrains Mono"', "monospace"],
+        mona: ['"Mona Sans"', 'sans-serif'],
+      },
       width: {
         "0.5/10": "5%",
         "1/10": "10%",
@@ -16,7 +20,7 @@ export default {
       colors: {
         graybg: "#191919",
         lightgray: "#9B9B9B",
-        notearea: "#282A36",
+        notearea: "#34374a",
         sidebar: "#21222c",
         h1: "#F8F8F2",
         h2: "#E9E9E9",
