@@ -1,0 +1,9 @@
+<svg width="14px" height="14px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#7d8991">
+  <circle cy="2" cx="5.5" r="2" /> <!-- First column -->
+  <circle cy="8" cx="5.5" r="2" />
+  <circle cy="14" cx="5.5" r="2" />
+  <circle cy="2" cx="10.4957" r="2"/> <!-- Second column -->
+  <circle cy="8" cx="10.4957" r="2"/>
+  <circle cy="14" cx="10.4957" r="2"/>
+</svg>
+

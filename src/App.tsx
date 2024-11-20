@@ -1,9 +1,10 @@
-import Note from "./pages/Note";
+import Note from "./components/Note";
 
 function App() {
+  
   return (
     <>
-     <Note />
+      <Note />
     </>
   );
 }
