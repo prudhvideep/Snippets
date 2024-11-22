@@ -69,7 +69,7 @@
 }
 
 .editor-input p {
-  color: #ccdbe5;
+  color: #e4d7ec;
   font-size: 17px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: 100;
@@ -108,7 +108,7 @@
 }
 
 .editor-text-bold {
-  font-weight: 700;
+  font-weight: 750;
 }
 
 .editor-list-ul {
@@ -173,13 +173,13 @@
 .editor-list-ol {
   color: #dce7ee;
   list-style-type: decimal;
-  padding-left: 3rem; /* Add space for the grab icon */
+  padding-left: 3rem;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
-  position: relative; /* Allow positioning for children */
+  position: relative; 
 }
 
 .editor-list-ol li {
@@ -219,7 +219,7 @@
   margin-left: 28px;
   margin-top: 4px;
   margin-bottom: 4px;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Baskerville",sans-serif;
   font-style: italic;
   border-left: 4px solid #b1bdd1;
   padding-left: 14px;
@@ -243,6 +243,27 @@
   position: absolute;
   content: attr(data-placeholder);
   color: rgba(136, 136, 136, 0.6);
+}
+
+.editor-code {
+  position: relative;
+  background-color: #282828;
+  font-family: Menlo, Consolas, Monaco, monospace;
+  color: #ebdbb2; 
+  display: block;
+  padding: 24px 24px 24px 24px;
+  line-height: 1.53;
+  font-size: 13px;
+  margin: 0;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  overflow-x: auto;
+  border-radius: 6px;
+  tab-size: 2;
+  counter-reset: line-number; 
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 

@@ -46,7 +46,6 @@ export const getNodePlaceholder = (lexicalNode: LexicalNode) => {
   let placeholder = "";
   if ($isHeadingNode(lexicalNode)) {
      const tag = lexicalNode.getTag();
-     console.log("Tag ----> ",tag)
      placeholder = 'Heading';
      switch (tag) {
         case 'h1': {

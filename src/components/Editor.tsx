@@ -8,7 +8,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { useEffect, useState } from "react";
 import { $createTextNode, $getRoot } from "lexical";
-import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
+import { $createHeadingNode } from "@lexical/rich-text";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import FloatingTextFormatToolbarPlugin from "../plugins/FloatingTextFormatToolbarPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
@@ -73,7 +73,6 @@ export default function Editor(): JSX.Element {
   return (
     <div className="editor-container w-9/10">
       <div className="editor-inner mt-2">
-        {/* <ToolbarPlugin editor={editor} /> */}
         <RichTextPlugin
           contentEditable={
             <div className="editor" ref={onRef}>
