@@ -8,9 +8,11 @@ import {
   RiArrowLeftLine,
   RiFileTextLine,
   RiCloseLine,
+  RiHome2Fill,
 } from "react-icons/ri";
 import useFileStore from "../store/fileStore";
 import { useNavigate } from "react-router-dom";
+import { FaHome } from "react-icons/fa";
 
 const FoldersPage = () => {
   const {
@@ -128,24 +130,35 @@ const FoldersPage = () => {
   return (
     <div className="min-h-screen bg-sidebar">
       <header className="bg-sidebar border-b border-gray-500">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <h1 className="text-2xl font-semibold text-white">Folders</h1>
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <RiSearchLine className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                placeholder="Search folders..."
-                className="pl-10 pr-4 py-2 bg-notearea border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8860a9] text-white placeholder-gray-400"
-              />
+        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center">
+            <div className="flex flex-row justify-start items-center gap-4 ">
+              <button
+                onClick={() => navigate("/")}
+                className="flex items-center gap-2 text-gray-400 hover:text-white"
+              >
+                <FaHome className="h-5 w-5" />
+              </button>
+              <h1 className="text-2xl font-semibold text-white">Folders</h1>
             </div>
-            <button
-              onClick={() => setShowFolderModal(true)}
-              className="flex items-center gap-2 bg-[#6d4d88] text-white px-4 py-2 rounded-lg hover:bg-[#8860a9]"
-            >
-              <RiAddLine className="h-5 w-5" />
-              New Folder
-            </button>
+
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <RiSearchLine className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <input
+                  type="text"
+                  placeholder="Search folders..."
+                  className="pl-10 pr-4 py-2 bg-notearea border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8860a9] text-white placeholder-gray-400"
+                />
+              </div>
+              <button
+                onClick={() => setShowFolderModal(true)}
+                className="flex items-center gap-2 bg-[#6d4d88] text-white px-4 py-2 rounded-lg hover:bg-[#8860a9]"
+              >
+                <RiAddLine className="h-5 w-5" />
+                New Folder
+              </button>
+            </div>
           </div>
         </div>
       </header>
