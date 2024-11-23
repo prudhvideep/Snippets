@@ -2,10 +2,14 @@ import { CiSearch } from "react-icons/ci";
 import { FiMenu } from "react-icons/fi";
 import { IoCreateOutline } from "react-icons/io5";
 import useNoteLayoutStore from "../store/noteLayoutStore";
+import useFileStore from "../store/fileStore";
+import { RiFileTextLine } from "react-icons/ri";
 
 function Sidebar() {
   const sideBarExpanded = useNoteLayoutStore.use.sideBarExpanded();
   const setSideBarExpanded = useNoteLayoutStore.use.setSideBarExpanded();
+
+  const { setSelectedFile, files } = useFileStore();
 
   return (
     <div
@@ -45,6 +49,22 @@ function Sidebar() {
         } flex-col mt-4 w-full h-8 relative items-start`}
       >
         <p className="ml-4 text-gray-400">Snippets</p>
+
+        <div className="ml-4 mt-4 w-9/10 flex flex-col gap-1">
+          {files &&
+            files.map((file) => (
+              <div className="pl-2 p-2 text-gray-400 rounded-md hover:bg-notearea hover:cursor-pointer">
+                <div
+                  onClick={() => {
+                    setSelectedFile(file)
+                  }} 
+                  className="flex flex-row gap-2 items-center">
+                  <RiFileTextLine className="text-xl"/>
+                  <p>{file.file_name}</p>
+                </div>
+              </div>
+            ))}
+        </div>
       </div>
     </div>
   );

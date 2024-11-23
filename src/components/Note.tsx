@@ -1,4 +1,3 @@
-import { useState } from "react";
 import ExampleTheme from "../themes/exampleTheme";
 
 import Editor from "./Editor";
@@ -15,11 +14,15 @@ import { ToolbarContext } from "../context/ToolbarContext";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import Sidebar from "./Sidebar";
 import { MdKeyboardVoice } from "react-icons/md";
-import { FaRegTrashAlt, FaTelegramPlane } from "react-icons/fa";
+import { FaChevronLeft, FaRegTrashAlt, FaTelegramPlane } from "react-icons/fa";
 import { FiLock } from "react-icons/fi";
 import { BsMarkdown } from "react-icons/bs";
+import useFileStore from "../store/fileStore";
+import { useNavigate } from "react-router-dom";
 
 function Note() {
+  const navigate = useNavigate();
+  const { selectedFile, setSelectedFile } = useFileStore();
 
   const editorConfig = {
     theme: ExampleTheme,
@@ -55,9 +58,16 @@ function Note() {
                 <div className="flex flex-col gap-2 w-full h-full">
                   <div className="mt-3 w-full h-10 mb-2 ml-auto mr-auto">
                     <div className="pl-2 pr-2 w-full h-full flex flex-row justify-between">
-                      <div className="w-1/4 h-full overflow-hidden place-content-center">
+                      <div
+                        onClick={() => {
+                          setSelectedFile(null);
+                          navigate("/folders");
+                        }}
+                        className="w-1/4 h-full overflow-hidden place-content-center flex flex-row items-center justify-start pl-2"
+                      >
+                        <FaChevronLeft className="text-xl text-[#b8bfc4] hover:cursor-pointer hover:text-gray-200 hover:scale-105" />
                         <p className="pl-2 font-medium text-lg text-ellipsis text-[#b8bfc4] hover:text-gray-200 hover:cursor-pointer">
-                          Title
+                          {selectedFile?.file_name || "Title"}
                         </p>
                       </div>
                       <div className="w-1/3 h-full overflow-hidden">

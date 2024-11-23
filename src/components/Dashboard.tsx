@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   RiSearchLine,
   RiAddLine,
@@ -7,20 +8,41 @@ import {
   RiTimeLine,
 } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import Folder from "../interfaces/Folder";
+import getLatestFolders from "../db/neon";
 
 const Dashboard = (): JSX.Element => {
   const navigate = useNavigate();
+  const [folders, setFolders] = useState<Folder[]>([]);
 
   const user = {
     name: "John Doe",
   };
 
-  const folders = [
-    { id: 1, name: "Work Notes", filesCount: 23 },
-    { id: 2, name: "Personal", filesCount: 15 },
-    { id: 3, name: "Projects", filesCount: 8 },
-    { id: 4, name: "Meeting Notes", filesCount: 12 },
-  ];
+  useEffect(() => {
+    async function fetchFolders() {
+      try {
+        const result = await getLatestFolders();
+
+        console.log(result);
+
+        const folderResult: Folder[] = [];
+
+        result.forEach((ele) => {
+          folderResult.push({
+            id: ele.folder_id,
+            folder_name: ele.folder_name,
+          });
+        });
+
+        setFolders(folderResult);
+      } catch (error) {
+        console.error("Error fetching folders:", error);
+      }
+    }
+
+    fetchFolders();
+  }, []);
 
   const recentFiles = [
     {
@@ -41,7 +63,6 @@ const Dashboard = (): JSX.Element => {
   };
 
   return (
-
     <div className="min-h-screen bg-sidebar">
       <header className="bg-sidebar border-b border-gray-500">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -78,7 +99,10 @@ const Dashboard = (): JSX.Element => {
             <div className="bg-notearea rounded-lg border border-gray-500 p-6 min-h-full flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-medium text-white">Your Folders</h2>
-                <button className="text-[#a474ca] hover:text-[#c599ea] text-sm font-medium">
+                <button
+                  onClick={() => navigate("/folders")}
+                  className="text-[#a474ca] hover:text-[#c599ea] text-sm font-medium"
+                >
                   View All
                 </button>
               </div>
@@ -91,9 +115,9 @@ const Dashboard = (): JSX.Element => {
                     <div className="flex items-center gap-3">
                       <RiFolderOpenLine className="h-5 w-5 text-[#a474ca]" />
                       <div>
-                        <p className="font-medium text-white">{folder.name}</p>
+                        <p className="font-medium text-white">{folder.folder_name}</p>
                         <p className="text-sm text-gray-400">
-                          {folder.filesCount} files
+                          {0} files
                         </p>
                       </div>
                     </div>
@@ -116,7 +140,7 @@ const Dashboard = (): JSX.Element => {
                   <div
                     key={file.id}
                     onClick={function handleNavigation() {
-                      navigate("/note")
+                      navigate("/note");
                     }}
                     className="flex items-center justify-between p-3 rounded-md hover:bg-sidebar cursor-pointer transition-colors"
                   >
