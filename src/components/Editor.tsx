@@ -16,14 +16,17 @@ import ComponentPickerPlugin from "../plugins/ComponentPickerPlugin";
 import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
 import CodeHighlightPlugin from "../plugins/CodeHighlightPlugin";
 import CustomHighlightPlugin from "../plugins/CustomHighlightPlugin";
+import AutoSavePlugin from "../plugins/AutoSavePlugin";
+import useFileStore from "../store/fileStore";
 
 export default function Editor(): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
-  const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
-  
+  //isLinkEditMode
+  const [_, setIsLinkEditMode] = useState<boolean>(false);
 
+  const { selectedFile } = useFileStore();
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -50,6 +53,21 @@ export default function Editor(): JSX.Element {
       document.removeEventListener("click", handleClick);
     };
   }, []);
+
+  useEffect(() => {
+    if (selectedFile) {
+      editor.update(() => {
+        console.log("Content ----> ", selectedFile.fileContent);
+
+        if (selectedFile.fileContent) {
+          const editorState = editor.parseEditorState(
+            JSON.stringify(selectedFile.fileContent)
+          );
+          editor.setEditorState(editorState);
+        }
+      });
+    }
+  }, [editor, selectedFile]);
 
   useEffect(() => {
     editor.update(() => {
@@ -83,12 +101,13 @@ export default function Editor(): JSX.Element {
           }
           ErrorBoundary={LexicalErrorBoundary}
         />
+        <ListPlugin />
         <HashtagPlugin />
         <HistoryPlugin />
-        <AutoFocusPlugin />
-        <TabIndentationPlugin />
-        <ListPlugin />
         <CheckListPlugin />
+        <AutoFocusPlugin />
+        <AutoSavePlugin />
+        <TabIndentationPlugin />
         <ComponentPickerPlugin />
         <CodeHighlightPlugin />
         <CustomHighlightPlugin />

@@ -61,7 +61,7 @@ function Note() {
                       <div
                         onClick={() => {
                           setSelectedFile(null);
-                          navigate("/folders");
+                          navigate("/");
                         }}
                         className="w-1/4 h-full overflow-hidden place-content-center flex flex-row items-center justify-start pl-2"
                       >

@@ -8,18 +8,16 @@ import {
   RiArrowLeftLine,
   RiFileTextLine,
   RiCloseLine,
-  RiHome2Fill,
 } from "react-icons/ri";
 import useFileStore from "../store/fileStore";
 import { useNavigate } from "react-router-dom";
-import { FaHome } from "react-icons/fa";
+
 
 const FoldersPage = () => {
   const {
     folders,
     files,
     selectedFolder,
-    selectedFile,
     showFolderModal,
     newFolderName,
     fetchFiles,
@@ -133,13 +131,7 @@ const FoldersPage = () => {
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <div className="flex flex-row justify-start items-center gap-4 ">
-              <button
-                onClick={() => navigate("/")}
-                className="flex items-center gap-2 text-gray-400 hover:text-white"
-              >
-                <FaHome className="h-5 w-5" />
-              </button>
-              <h1 className="text-2xl font-semibold text-white">Folders</h1>
+              <h1 className="text-2xl font-semibold text-white">Snippets</h1>
             </div>
 
             <div className="flex items-center gap-4">

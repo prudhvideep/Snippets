@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import {File} from "../interfaces/File"
 import Folder from '../interfaces/Folder';
 import createSelectors from './createSelectors';
-import { getFiles, getFolders } from '../db/neon';
+import { createFolder, getFiles, getFolders } from '../db/neon';
 
 interface FileStore {
   // State
@@ -51,7 +51,7 @@ const useFileStoreBase = create<FileStore>((set, get) => ({
 
   setNewFolderName : (value) => set({newFolderName : value || ""}),
 
-  addFolder : (folderName) => {
+  addFolder : async (folderName) => {
     const { folders } = get(); 
 
     let newFolder = {
@@ -63,6 +63,8 @@ const useFileStoreBase = create<FileStore>((set, get) => ({
     set((state) => ({
       folders: [...state.folders, newFolder]
     }));
+
+    await createFolder(newFolder);
   
   },
 
@@ -90,8 +92,6 @@ const useFileStoreBase = create<FileStore>((set, get) => ({
   fetchFiles : async (id) => {
       const files = await getFiles(id);
 
-      console.log("Files ----> ",files);
-
       const formattedFiles : File[] = [];
 
       files.forEach((ele) => {
@@ -100,11 +100,13 @@ const useFileStoreBase = create<FileStore>((set, get) => ({
           day: 'numeric',
           year: 'numeric'
       }).format(new Date(ele.last_edited))
+        
 
         let formattedElement = {
           file_id : ele.file_id,
           file_name : ele.file_name,
           lastEdited : formattedDate,
+          fileContent : ele.file_content,
         };
 
         formattedFiles.push(formattedElement);
