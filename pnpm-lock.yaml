@@ -2362,10 +2362,6 @@ snapshots:
 
   deep-is@0.1.4: {}
 
-  dev@0.1.3:
-    dependencies:
-      inotify: 1.4.6
-
   didyoumean@1.2.2: {}
 
   dlv@1.1.3: {}
