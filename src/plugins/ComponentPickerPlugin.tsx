@@ -40,7 +40,6 @@ import {
   FaParagraph,
 } from "react-icons/fa";
 import { FaCode } from "react-icons/fa6";
-import { LuRows } from "react-icons/lu";
 
 class ComponentPickerOption extends MenuOption {
   title: string;

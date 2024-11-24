@@ -1,5 +1,5 @@
 import {ElementFormatType} from 'lexical';
-import React, {
+import {
   createContext,
   ReactNode,
   useCallback,
