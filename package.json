@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "postinstall": "pnpm uninstall inotify"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@lexical/code": "^0.20.0",
