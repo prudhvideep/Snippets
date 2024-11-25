@@ -1,5 +1,6 @@
 import { FiMenu } from "react-icons/fi";
 import useNoteLayoutStore from "../store/noteLayoutStore";
+import TableOfContentsPlugin from "../plugins/TableOfContentsPlugin";
 
 function Sidebar() {
   const sideBarExpanded = useNoteLayoutStore.use.sideBarExpanded();
@@ -7,10 +8,10 @@ function Sidebar() {
 
   return (
     <div
-      className={`hidden sm:block h-full transition-all duration-300 ease-in-out overflow-y-auto overflow-x-hidden ${
+      className={`hidden sm:block h-full transition-all duration-300 ease-in-out overflow-y-auto overflow-x- ${
         !sideBarExpanded
           ? "w-12 sm:w-16 md:w-20 bg-darkbg"
-          : "w-1/3 sm:w-1/3 md:w-1/4 lg:w-1/5 bg-sidebar"
+          : "w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 bg-sidebar"
       }`}
     >
       <div className="flex flex-row mt-2 w-full h-10 items-end justify-between">
@@ -24,9 +25,9 @@ function Sidebar() {
       <div
         className={`${
           !sideBarExpanded ? "hidden" : "flex"
-        } flex-col mt-4 w-full h-8 relative items-start`}
+        } flex-col mt-4 gap-4  w-full relative items-center`}
       >
-        <p className="ml-4 text-gray-400">Snippets</p>
+        <div className="w-full">{<TableOfContentsPlugin />}</div>
       </div>
     </div>
   );

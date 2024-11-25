@@ -2,6 +2,7 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import TableOfContentsPlugin from "../plugins/TableOfContentsPlugin"
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -57,11 +58,11 @@ export default function Editor(): JSX.Element {
   }, []);
 
   useEffect(() => {
-    console.log("Selected file ----> ",selectedFile);
+    // console.log("Selected file ----> ",selectedFile);
 
     if (selectedFile) {
       editor.update(() => {
-        console.log("Content ----> ", selectedFile.fileContent);
+        // console.log("Content ----> ", selectedFile.fileContent);
 
         if (selectedFile.fileContent) {
           const editorState = editor.parseEditorState(
@@ -123,6 +124,7 @@ export default function Editor(): JSX.Element {
             setIsLinkEditMode={setIsLinkEditMode}
           />
         )}
+       
       </div>
     </div>
   );

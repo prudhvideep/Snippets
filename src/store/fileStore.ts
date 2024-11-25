@@ -87,7 +87,7 @@ const useFileStoreBase = create<FileStore>((set, get) => ({
   fetchFolders :async () => {
     const folder = await getFolders();
     
-    console.log(folder)
+    // console.log(folder)
 
     const modifiedFolders : Folder[] = []
 
