@@ -1,5 +1,5 @@
 interface Folder {
-  folder_id: number;
+  folder_id: string;
   folder_name: string;
   filesCount: number;
 }

@@ -11,7 +11,8 @@ import {
 } from "react-icons/ri";
 import useFileStore from "../store/fileStore";
 import { useNavigate } from "react-router-dom";
-
+import { v4 as uuid } from "uuid";
+import { File } from "../interfaces/File";
 
 const FoldersPage = () => {
   const {
@@ -19,13 +20,18 @@ const FoldersPage = () => {
     files,
     selectedFolder,
     showFolderModal,
+    showFileModal,
     newFolderName,
+    newFileName,
     fetchFiles,
     setSelectedFolder,
     setSelectedFile,
     setShowFolderModal,
+    setShowFileModal,
     addFolder,
+    addFile,
     setNewFolderName,
+    setNewFileName,
     fetchFolders,
   } = useFileStore();
 
@@ -96,7 +102,12 @@ const FoldersPage = () => {
           </h2>
         </div>
 
-        <button className="flex items-center gap-2 bg-[#6d4d88] text-white px-4 py-2 rounded-lg hover:bg-[#8860a9]">
+        <button
+          onClick={() => {
+            setShowFileModal(true);
+          }}
+          className="flex items-center gap-2 bg-[#6d4d88] text-white px-4 py-2 rounded-lg hover:bg-[#8860a9]"
+        >
           <RiAddLine className="h-5 w-5" />
           New File
         </button>
@@ -191,6 +202,60 @@ const FoldersPage = () => {
                   }
                   setNewFolderName("");
                   setShowFolderModal(false);
+                }}
+                className="px-4 py-2 bg-[#6d4d88] text-white rounded-lg hover:bg-[#8860a9]"
+              >
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showFileModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-notearea border border-gray-500 rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-medium text-white">
+                Create New File
+              </h2>
+              <button
+                onClick={() => setShowFileModal(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <RiCloseLine className="h-5 w-5" />
+              </button>
+            </div>
+            <input
+              type="text"
+              value={newFileName}
+              onChange={(e) => setNewFileName(e.target.value)}
+              placeholder="Enter file name"
+              className="w-full bg-sidebar border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8860a9] mb-4"
+            />
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setNewFileName("");
+                  setShowFileModal(false);
+                }}
+                className="px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (selectedFolder) {
+                    let newFile: File = {
+                      file_id: uuid(),
+                      file_name: newFileName,
+                      lastEdited: "",
+                      fileContent: null,
+                    };
+
+                    addFile(newFile, selectedFolder.folder_id);
+                    setShowFileModal(false);
+                  }
                 }}
                 className="px-4 py-2 bg-[#6d4d88] text-white rounded-lg hover:bg-[#8860a9]"
               >

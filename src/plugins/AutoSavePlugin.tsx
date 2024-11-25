@@ -12,7 +12,7 @@ export default function AutoSavePlugin(): JSX.Element {
     let timeoutId: NodeJS.Timeout | null = null;
 
     function saveState(
-      fileId: number,
+      fileId: string,
       state: SerializedEditorState<SerializedLexicalNode>
     ) {
       saveStateToDb(fileId, state);

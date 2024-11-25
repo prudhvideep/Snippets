@@ -55,7 +55,7 @@ function Sidebar() {
             files.map((file) => (
               <div
                 key={file.file_id} 
-                className="pl-2 p-2 text-gray-400 rounded-md hover:bg-notearea hover:cursor-pointer">
+                className="p-1  text-gray-400 rounded-md hover:bg-notearea hover:cursor-pointer">
                 <div
                   onClick={() => {
                     setSelectedFile(file)

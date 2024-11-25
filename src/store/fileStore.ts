@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import {File} from "../interfaces/File"
+import {v4 as uuid} from 'uuid';
 import Folder from '../interfaces/Folder';
 import createSelectors from './createSelectors';
-import { createFolder, getFiles, getFolders } from '../db/neon';
+import { createFile, createFolder, getFiles, getFolders } from '../db/neon';
 
 interface FileStore {
   // State
@@ -19,12 +20,15 @@ interface FileStore {
   setFolders: (folders: Folder[]) => void;
   setFiles: (files : File[]) => void;
   addFolder : (folderName : string) => void;
+  addFile : (file : File, folder_id : string) => void;
   setSelectedFolder : (folder : Folder | null) => void;
   setSelectedFile : (file : File | null) => void;
-  setShowFolderModal : (value : boolean) => void
+  setShowFolderModal : (value : boolean) => void;
+  setShowFileModal : (value : boolean) => void;
   setNewFolderName : (value : string | null) => void;
+  setNewFileName : (value : string | null) => void;
   fetchFolders : () => void; 
-  fetchFiles : (id : number) => void;
+  fetchFiles : (id : string) => void;
 }
 
 const useFileStoreBase = create<FileStore>((set, get) => ({
@@ -49,13 +53,17 @@ const useFileStoreBase = create<FileStore>((set, get) => ({
 
   setShowFolderModal : (value) => set({showFolderModal : value}),
 
+  setShowFileModal : (value) => set({showFileModal : value}),
+
   setNewFolderName : (value) => set({newFolderName : value || ""}),
+
+  setNewFileName : (value) => set({newFileName : value || ""}),
 
   addFolder : async (folderName) => {
     const { folders } = get(); 
 
     let newFolder = {
-      folder_id : folders.length > 0 ? folders[folders.length - 1].folder_id + 1 : 1, 
+      folder_id : uuid(), 
       folder_name : folderName,
       filesCount : 0 
     }
@@ -66,6 +74,14 @@ const useFileStoreBase = create<FileStore>((set, get) => ({
 
     await createFolder(newFolder);
   
+  },
+
+  addFile : async (file, folder_id) => {
+    set((state) => ({
+      files: [...state.files, file]
+    }));
+
+    await createFile(file,folder_id);
   },
 
   fetchFolders :async () => {
@@ -89,7 +105,7 @@ const useFileStoreBase = create<FileStore>((set, get) => ({
     set({folders : modifiedFolders})
   },
 
-  fetchFiles : async (id) => {
+  fetchFiles : async (id : string) => {
       const files = await getFiles(id);
 
       const formattedFiles : File[] = [];
@@ -99,7 +115,7 @@ const useFileStoreBase = create<FileStore>((set, get) => ({
           month: 'short',
           day: 'numeric',
           year: 'numeric'
-      }).format(new Date(ele.last_edited))
+      }).format(new Date(ele.last_updated_date))
         
 
         let formattedElement = {
