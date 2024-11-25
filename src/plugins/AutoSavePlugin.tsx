@@ -39,7 +39,7 @@ export default function AutoSavePlugin(): JSX.Element {
       }
       unregisterListener();
     };
-  }, [editor]);
+  }, [editor,selectedFile]);
 
   return <></>;
 }

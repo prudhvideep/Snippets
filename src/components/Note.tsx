@@ -58,33 +58,33 @@ function Note() {
                 <div className="flex flex-col gap-2 w-full h-full">
                   <div className="mt-3 w-full h-10 mb-2 ml-auto mr-auto">
                     <div className="pl-2 pr-2 w-full h-full flex flex-row justify-between">
-                      <div
-                        onClick={() => {
-                          setSelectedFile(null);
-                          navigate("/");
-                        }}
-                        className="w-1/4 h-full overflow-hidden place-content-center flex flex-row items-center justify-start pl-2"
-                      >
-                        <FaChevronLeft className="text-xl text-[#b8bfc4] hover:cursor-pointer hover:text-gray-200 hover:scale-105" />
-                        <p className="pl-2 font-medium text-lg text-ellipsis text-[#b8bfc4] hover:text-gray-200 hover:cursor-pointer">
+                      <div className="w-1/2 h-full overflow-hidden place-content-center flex flex-row items-center justify-start pl-2">
+                        <FaChevronLeft
+                          onClick={() => {
+                            setSelectedFile(null);
+                            navigate("/");
+                          }}
+                          className="text-xl text-[#b8bfc4] hover:cursor-pointer hover:text-gray-200 hover:scale-110"
+                        />
+                        <p className="pl-2 font-medium text-lg text-ellipsis text-[#b8bfc4]">
                           {selectedFile?.file_name || "Title"}
                         </p>
                       </div>
-                      <div className="w-1/3 h-full overflow-hidden">
+                      <div className="w-1/2 h-full overflow-auto">
                         <div className="w-full h-full flex flex-row justify-end gap-2 items-center">
-                          <div className="w-1/5 md:w-1/12 h-8/10 rounded-lg flex items-center justify-center place-content-evenly bg-sidebar">
+                          <div className="w-10 h-8/10 rounded-lg flex items-center justify-center place-content-evenly bg-sidebar">
                             <MdKeyboardVoice className="text-lg text-gray-200 hover:cursor-pointer hover:scale-105 hover:text-gray-50" />
                           </div>
-                          <div className="w-1/5 md:w-1/12 h-8/10 rounded-lg flex items-center justify-center place-content-evenly bg-sidebar">
+                          <div className="w-10 h-8/10 rounded-lg flex items-center justify-center place-content-evenly bg-sidebar">
                             <FiLock className="text-md font-semibold text-gray-200 hover:cursor-pointer hover:scale-105 hover:text-gray-50" />
                           </div>
-                          <div className="w-1/5 md:w-1/12 h-8/10 rounded-lg flex items-center justify-center place-content-evenly bg-sidebar">
+                          <div className="w-10 h-8/10 rounded-lg flex items-center justify-center place-content-evenly bg-sidebar">
                             <FaRegTrashAlt className="text-md font-semibold text-gray-200 hover:cursor-pointer hover:scale-105 hover:text-gray-50" />
                           </div>
-                          <div className="w-1/5 md:w-1/12 h-8/10 rounded-lg flex items-center justify-center place-content-evenly bg-sidebar">
+                          <div className="w-10 h-8/10 rounded-lg flex items-center justify-center place-content-evenly bg-sidebar">
                             <FaTelegramPlane className="text-md font-semibold text-gray-200 hover:cursor-pointer hover:scale-105 hover:text-gray-50" />
                           </div>
-                          <div className="w-1/5 md:w-1/12 h-8/10 rounded-lg flex items-center justify-center place-content-evenly bg-sidebar">
+                          <div className="w-10 h-8/10 rounded-lg flex items-center justify-center place-content-evenly bg-sidebar">
                             <BsMarkdown className="text-md font-semibold text-gray-200 hover:cursor-pointer hover:scale-105 hover:text-gray-50" />
                           </div>
                         </div>

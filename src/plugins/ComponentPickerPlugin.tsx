@@ -92,7 +92,7 @@ function ComponentPickerMenuItem({
         aria-selected={isSelected}
         onMouseEnter={onMouseEnter}
         onClick={onClick}
-        className="p-3 hover:border hover:border-pink-700 text-gray-200 rounded-md w-full flex flex-row text-md items-center gap-2 hover:bg-notearea "
+        className="p-3 hover:border hover:border-[#8860a9] text-gray-200 rounded-md w-full flex flex-row text-md items-center gap-2 hover:bg-[#323133] "
       >
         {option.icon}
         <p>{option.title}</p>

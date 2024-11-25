@@ -18,6 +18,7 @@ import CodeHighlightPlugin from "../plugins/CodeHighlightPlugin";
 import CustomHighlightPlugin from "../plugins/CustomHighlightPlugin";
 import AutoSavePlugin from "../plugins/AutoSavePlugin";
 import useFileStore from "../store/fileStore";
+import { useNavigate } from "react-router-dom";
 
 export default function Editor(): JSX.Element {
   const [editor] = useLexicalComposerContext();
@@ -27,6 +28,7 @@ export default function Editor(): JSX.Element {
   const [_, setIsLinkEditMode] = useState<boolean>(false);
 
   const { selectedFile } = useFileStore();
+  const navigate = useNavigate();
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -55,6 +57,8 @@ export default function Editor(): JSX.Element {
   }, []);
 
   useEffect(() => {
+    console.log("Selected file ----> ",selectedFile);
+
     if (selectedFile) {
       editor.update(() => {
         console.log("Content ----> ", selectedFile.fileContent);
@@ -66,6 +70,8 @@ export default function Editor(): JSX.Element {
           editor.setEditorState(editorState);
         }
       });
+    }else{
+      navigate("/");
     }
   }, [editor, selectedFile]);
 
