@@ -10,12 +10,15 @@ import {
   RiCloseLine,
   RiSunLine,
   RiMoonLine,
+  RiLogoutBoxRLine,
 } from "react-icons/ri";
 import useFileStore from "../store/fileStore";
 import useThemeStore from "../store/themeStore";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import { File } from "../interfaces/File";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/firebase";
 
 const FoldersPage = () => {
   const {
@@ -56,6 +59,15 @@ const FoldersPage = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
   };
 
   function renderFolders() {
@@ -260,6 +272,14 @@ const FoldersPage = () => {
                   <RiMoonLine className="h-5 w-5" />
                 )}
               </button>
+              <button
+              onClick={handleLogout}
+              className={`flex items-center gap-2 p-2 rounded-lg hover:bg-opacity-10 hover:bg-gray-500 ${
+                theme === "dark" ? "text-white" : "text-gray-800"
+              }`}
+            >
+              <RiLogoutBoxRLine className="h-5 w-5" />
+            </button>
             </div>
           </div>
         </div>
