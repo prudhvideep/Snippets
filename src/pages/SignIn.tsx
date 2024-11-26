@@ -28,10 +28,12 @@ function SignIn() {
         const userName = user.displayName || "Anonymous User"; 
         setUserName(userName); 
         navigate("/folders");
+      }else {
+        navigate("/");
       }
     });
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, [navigate]);
 
   const toggleTheme = () => {

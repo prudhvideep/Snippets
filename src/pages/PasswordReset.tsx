@@ -1,15 +1,37 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { RiSunLine, RiMoonLine } from "react-icons/ri";
 import useThemeStore from "../store/themeStore";
+import useUserStore from "../store/userStore";
 
 function PasswordReset() {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    userName,
+    setUserName,
+    authError,
+    setAuthError,
+  } = useUserStore();
+  const navigate = useNavigate();
+
   const { theme, setTheme } = useThemeStore();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        const userName = user.displayName || "Anonymous User";
+        setUserName(userName);
+        navigate("/folders");
+      } 
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
 
   const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
@@ -21,30 +43,30 @@ function PasswordReset() {
     event.preventDefault();
 
     if (!email) {
-      setError("Please enter your email address.");
+      setAuthError("Please enter your email address.");
       return;
     }
 
     try {
       await sendPasswordResetEmail(auth, email);
-      setMessage("Password reset email sent! Check your inbox.");
-      setError("");
+      setAuthError("Password reset email sent! Check your inbox.");
+      setAuthError("");
     } catch (error: any) {
       const errorCode = error.code;
 
       switch (errorCode) {
         case "auth/invalid-email":
-          setError("This email address is invalid.");
+          setAuthError("This email address is invalid.");
           break;
         case "auth/user-not-found":
-          setError("This email address is not registered.");
+          setAuthError("This email address is not registered.");
           break;
         default:
-          setError("Failed to send password reset email. Please try again.");
+          setAuthError("Failed to send password reset email. Please try again.");
           break;
       }
 
-      setMessage("");
+      setAuthError("");
     }
   };
 
@@ -81,14 +103,14 @@ function PasswordReset() {
           theme === "dark" ? "bg-notearea" : "bg-white"
         }`}>
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {message && (
+            {authError && (
               <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded">
-                {message}
+                {authError}
               </div>
             )}
-            {error && (
+            {authError && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
-                {error}
+                {authError}
               </div>
             )}
 
@@ -112,7 +134,7 @@ function PasswordReset() {
                     ? "bg-sidebar text-white ring-gray-600 placeholder:text-gray-400"
                     : "bg-white text-gray-900 ring-gray-300 placeholder:text-gray-400"
                 }`}
-                value={email}
+                value={email || ""}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>

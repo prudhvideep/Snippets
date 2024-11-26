@@ -55,6 +55,16 @@ const FoldersPage = () => {
     }
   }, [selectedFolder]);
 
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (!user) {
+        navigate("/")        
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
   const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
