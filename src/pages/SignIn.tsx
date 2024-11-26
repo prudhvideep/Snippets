@@ -12,13 +12,27 @@ import useThemeStore from "../store/themeStore";
 import useUserStore from "../store/userStore";
 
 function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  // const [errorMessage, setAuthError] = useState("");
+
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    showMessage,
+    setShowMessage,
+    setUserName,
+    authError,
+    setAuthError,
+    authErrorMessage,
+    setAuthErrorMessage
+  } = useUserStore();
+
   const { theme, setTheme } = useThemeStore();
 
-  const {setUserName} = useUserStore();
 
   const navigate = useNavigate();
 
@@ -58,24 +72,24 @@ function SignIn() {
 
       switch (errorCode) {
         case "auth/invalid-email":
-          setErrorMessage("This email address is invalid.");
+          setAuthErrorMessage("This email address is invalid.");
           break;
         case "auth/user-disabled":
-          setErrorMessage("This email address is disabled by the administrator.");
+          setAuthErrorMessage("This email address is disabled by the administrator.");
           break;
         case "auth/user-not-found":
-          setErrorMessage("This email address is not registered.");
+          setAuthErrorMessage("This email address is not registered.");
           break;
         case "auth/wrong-password":
-          setErrorMessage(
+          setAuthErrorMessage(
             "The password is invalid or the user does not have a password."
           );
           break;
         case "auth/invalid-credential":
-          setErrorMessage("The email or password combination is invalid.");
+          setAuthErrorMessage("The email or password combination is invalid.");
           break;
         default:
-          setErrorMessage(error.message);
+          setAuthErrorMessage(error.message);
           break;
       }
     }
@@ -96,31 +110,31 @@ function SignIn() {
 
       switch (errorCode) {
         case "auth/popup-closed-by-user":
-          setErrorMessage("Popup closed by the user.");
+          setAuthErrorMessage("Popup closed by the user.");
           break;
         case "auth/cancelled-popup-request":
-          setErrorMessage("Popup Cancelled by the user.");
+          setAuthErrorMessage("Popup Cancelled by the user.");
           break;
         case "auth/user-not-found":
-          setErrorMessage("This email address is not registered.");
+          setAuthErrorMessage("This email address is not registered.");
           break;
         case "auth/wrong-password":
-          setErrorMessage(
+          setAuthErrorMessage(
             "The password is invalid or the user does not have a password."
           );
           break;
         case "auth/invalid-credential":
-          setErrorMessage("The email or password combination is invalid.");
+          setAuthErrorMessage("The email or password combination is invalid.");
           break;
         default:
-          setErrorMessage(error.message);
+          setAuthErrorMessage(error.message);
           break;
       }
     }
   };
 
   return (
-    <div className={`min-h-screen flex flex-col justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8 ${
+    <div className={`min-h-screen overscroll-none flex flex-col justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8 ${
       theme === "dark" ? "bg-sidebar" : "bg-gray-100"
     }`}>
       {/* Theme Toggle Button */}
@@ -168,7 +182,7 @@ function SignIn() {
                   type="email"
                   autoComplete="email"
                   required
-                  className={`block w-full rounded-md border-0 py-1.5 pl-2.5 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset focus:ring-[#8860a9] sm:text-sm sm:leading-6 ${
+                  className={`block w-full rounded-md border-0 py-1.5 pl-2.5 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset outline-none focus:ring-[#8860a9] sm:text-sm sm:leading-6 ${
                     theme === "dark"
                       ? "bg-sidebar text-white ring-gray-600 placeholder:text-gray-400"
                       : "bg-white text-gray-900 ring-gray-300 placeholder:text-gray-400"
@@ -204,7 +218,7 @@ function SignIn() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  className={`block w-full rounded-md border-0 py-1.5 pl-2.5 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset focus:ring-[#8860a9] sm:text-sm sm:leading-6 ${
+                  className={`block w-full rounded-md border-0 py-1.5 pl-2.5 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset outline-none focus:ring-[#8860a9] sm:text-sm sm:leading-6 ${
                     theme === "dark"
                       ? "bg-sidebar text-white ring-gray-600 placeholder:text-gray-400"
                       : "bg-white text-gray-900 ring-gray-300 placeholder:text-gray-400"
@@ -222,7 +236,7 @@ function SignIn() {
                 Sign in
               </button>
               {error && (
-                <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
+                <p className="mt-2 text-sm text-red-500">{authErrorMessage}</p>
               )}
             </div>
           </form>

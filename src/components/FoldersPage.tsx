@@ -223,7 +223,7 @@ const FoldersPage = () => {
 
   return (
     <div
-      className={`min-h-screen ${
+      className={`touch-none min-h-screen ${
         theme === "dark" ? "bg-sidebar" : "bg-gray-100"
       }`}
     >

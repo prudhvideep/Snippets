@@ -16,6 +16,8 @@ function SignUp() {
     setUserName,
     authError,
     setAuthError,
+    authErrorMessage,
+    setAuthErrorMessage
   } = useUserStore();
 
   const { theme, setTheme } = useThemeStore();
@@ -26,6 +28,8 @@ function SignUp() {
       if (user) {
         const userName = user.displayName || "Anonymous User";
         setUserName(userName);
+        setAuthError(false);
+        setAuthErrorMessage(null);
         navigate("/folders");
       } 
     });
@@ -43,7 +47,8 @@ function SignUp() {
     event.preventDefault();
 
     if (!email || !password || !userName) {
-      setAuthError("Please fill in all fields.");
+      setAuthErrorMessage("Please fill in all fields.");
+      setAuthError(true);
       return;
     }
 
@@ -62,29 +67,31 @@ function SignUp() {
     } catch (error: any) {
       const errorCode = error.code;
 
+      setAuthError(true);
+
       switch (errorCode) {
         case "auth/invalid-email":
-          setAuthError("This email address is invalid.");
+          setAuthErrorMessage("This email address is invalid.");
           break;
         case "auth/user-disabled":
-          setAuthError("This email address is disabled by the administrator.");
+          setAuthErrorMessage("This email address is disabled by the administrator.");
           break;
         case "auth/user-not-found":
-          setAuthError("This email address is not registered.");
+          setAuthErrorMessage("This email address is not registered.");
           break;
         case "auth/wrong-password":
-          setAuthError(
+          setAuthErrorMessage(
             "The password is invalid or the user does not have a password."
           );
           break;
         case "auth/invalid-credential":
-          setAuthError("The email or password combination is invalid.");
+          setAuthErrorMessage("The email or password combination is invalid.");
           break;
         case "auth/email-already-in-use":
-          setAuthError("The email is already in use.");
+          setAuthErrorMessage("The email is already in use.");
           break;
         default:
-          setAuthError(error.message);
+          setAuthErrorMessage(error.message);
           break;
       }
     }
@@ -131,7 +138,7 @@ function SignUp() {
           <form className="space-y-6" onSubmit={handleSubmit}>
             {authError && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
-                {authError}
+                {authErrorMessage}
               </div>
             )}
 

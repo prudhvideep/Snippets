@@ -10,12 +10,13 @@ function PasswordReset() {
   const {
     email,
     setEmail,
-    password,
-    setPassword,
-    userName,
     setUserName,
+    showMessage,
+    setShowMessage,
     authError,
     setAuthError,
+    authErrorMessage,
+    setAuthErrorMessage,
   } = useUserStore();
   const navigate = useNavigate();
 
@@ -27,7 +28,11 @@ function PasswordReset() {
         const userName = user.displayName || "Anonymous User";
         setUserName(userName);
         navigate("/folders");
-      } 
+      }else {
+        setShowMessage(false);
+        setAuthError(false);
+        setAuthErrorMessage("");
+      }
     });
 
     return () => unsubscribe();
@@ -43,30 +48,31 @@ function PasswordReset() {
     event.preventDefault();
 
     if (!email) {
-      setAuthError("Please enter your email address.");
+      setAuthErrorMessage("Please enter your email address.");
+      setAuthError(true);
       return;
     }
 
     try {
       await sendPasswordResetEmail(auth, email);
-      setAuthError("Password reset email sent! Check your inbox.");
-      setAuthError("");
+      setAuthErrorMessage("Password reset email sent! Check your inbox.");
+      setShowMessage(true);
     } catch (error: any) {
       const errorCode = error.code;
 
       switch (errorCode) {
         case "auth/invalid-email":
-          setAuthError("This email address is invalid.");
+          setAuthErrorMessage("This email address is invalid.");
           break;
         case "auth/user-not-found":
-          setAuthError("This email address is not registered.");
+          setAuthErrorMessage("This email address is not registered.");
           break;
         default:
-          setAuthError("Failed to send password reset email. Please try again.");
+          setAuthErrorMessage("Failed to send password reset email. Please try again.");
           break;
       }
 
-      setAuthError("");
+      setAuthError(true);
     }
   };
 
@@ -103,14 +109,14 @@ function PasswordReset() {
           theme === "dark" ? "bg-notearea" : "bg-white"
         }`}>
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {authError && (
+            {showMessage && (
               <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded">
-                {authError}
+                {authErrorMessage}
               </div>
             )}
             {authError && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
-                {authError}
+                {authErrorMessage}
               </div>
             )}
 
@@ -168,6 +174,9 @@ function PasswordReset() {
             <div className="mt-6">
               <Link
                 to="/"
+                onClick={() => {
+                  setShowMessage(false);
+                }}
                 className="flex w-full justify-center rounded-md bg-[#6d4d88] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#8860a9]"
               >
                 Sign In
