@@ -2,7 +2,6 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
-import TableOfContentsPlugin from "../plugins/TableOfContentsPlugin"
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -20,13 +19,15 @@ import CustomHighlightPlugin from "../plugins/CustomHighlightPlugin";
 import AutoSavePlugin from "../plugins/AutoSavePlugin";
 import useFileStore from "../store/fileStore";
 import { useNavigate } from "react-router-dom";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import CodeActionMenuPlugin from "../plugins/CodeActionMenuPlugin";
+import FloatingLinkEditorPlugin from "../plugins/FloatingLinkEditorPlugin";
 
 export default function Editor(): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
-  //isLinkEditMode
-  const [_, setIsLinkEditMode] = useState<boolean>(false);
+  const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
 
   const { selectedFile } = useFileStore();
   const navigate = useNavigate();
@@ -58,12 +59,8 @@ export default function Editor(): JSX.Element {
   }, []);
 
   useEffect(() => {
-    // console.log("Selected file ----> ",selectedFile);
-
     if (selectedFile) {
       editor.update(() => {
-        // console.log("Content ----> ", selectedFile.fileContent);
-
         if (selectedFile.fileContent) {
           const editorState = editor.parseEditorState(
             JSON.stringify(selectedFile.fileContent)
@@ -71,7 +68,7 @@ export default function Editor(): JSX.Element {
           editor.setEditorState(editorState);
         }
       });
-    }else{
+    } else {
       navigate("/");
     }
   }, [editor, selectedFile]);
@@ -98,7 +95,7 @@ export default function Editor(): JSX.Element {
   }, [editor]);
 
   return (
-    <div className="editor-container w-9/10">
+    <div className="editor-container w-8/10">
       <div className="editor-inner mt-2">
         <RichTextPlugin
           contentEditable={
@@ -109,22 +106,31 @@ export default function Editor(): JSX.Element {
           ErrorBoundary={LexicalErrorBoundary}
         />
         <ListPlugin />
+        <LinkPlugin />
         <HashtagPlugin />
         <HistoryPlugin />
         <CheckListPlugin />
         <AutoFocusPlugin />
         <AutoSavePlugin />
+
+        <CodeHighlightPlugin />
         <TabIndentationPlugin />
         <ComponentPickerPlugin />
-        <CodeHighlightPlugin />
         <CustomHighlightPlugin />
         {floatingAnchorElem && (
-          <FloatingTextFormatToolbarPlugin
-            anchorElem={floatingAnchorElem}
-            setIsLinkEditMode={setIsLinkEditMode}
-          />
+          <>
+            <FloatingTextFormatToolbarPlugin
+              anchorElem={floatingAnchorElem}
+              setIsLinkEditMode={setIsLinkEditMode}
+            />
+            <CodeActionMenuPlugin anchorElem={floatingAnchorElem} />
+            <FloatingLinkEditorPlugin
+              anchorElem={floatingAnchorElem}
+              isLinkEditMode={isLinkEditMode}
+              setIsLinkEditMode={setIsLinkEditMode}
+            />
+          </>
         )}
-       
       </div>
     </div>
   );

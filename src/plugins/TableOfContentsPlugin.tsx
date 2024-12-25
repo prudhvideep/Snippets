@@ -71,7 +71,6 @@ function TableOfContentsList({
         );
         if (currentHeading !== null) {
           if (isHeadingBelowTheTopOfThePage(currentHeading)) {
-            //On natural scroll, user is scrolling up
             while (
               currentHeading !== null &&
               isHeadingBelowTheTopOfThePage(currentHeading) &&
@@ -92,7 +91,6 @@ function TableOfContentsList({
             const prevHeadingKey = tableOfContents[selectedIndex.current][0];
             setSelectedKey(prevHeadingKey);
           } else if (isHeadingAboveViewport(currentHeading)) {
-            //On natural scroll, user is scrolling down
             while (
               currentHeading !== null &&
               isHeadingAboveViewport(currentHeading) &&
@@ -135,7 +133,7 @@ function TableOfContentsList({
 
   return (
     <div className="table-of-contents">
-      <ul className="headings">
+      <ul className="headings text-gray-200">
         {tableOfContents.map(([key, text, tag], index) => {
           if (index === 0) {
             return (

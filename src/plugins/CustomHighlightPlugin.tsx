@@ -21,7 +21,7 @@ const isHtmlHeadingElement = (el: HTMLElement): el is HTMLHeadingElement => {
 };
 
 function setNodePlaceholderFromSelection(editor: LexicalEditor) {
-  editor.getEditorState().read(() => {
+  editor.update(() => {
     const selection = $getSelection();
     if (!$isRangeSelection(selection)) {
       return;
@@ -31,12 +31,13 @@ function setNodePlaceholderFromSelection(editor: LexicalEditor) {
 }
 
 function getAllLexicalChildren(editor: LexicalEditor) {
-  const childrenKeys = editor
-    .getEditorState()
-    .read(() => $getRoot().getChildrenKeys());
+  let childrenKeys: string[] = [];
+  editor.getEditorState().read(() => {
+    childrenKeys = $getRoot().getChildrenKeys();
+  });
 
   return childrenKeys.map((key) => ({
-    key: key,
+    key,
     node: $getNodeByKey(key),
     htmlElement: editor.getElementByKey(key),
   }));
@@ -45,27 +46,27 @@ function getAllLexicalChildren(editor: LexicalEditor) {
 export const getNodePlaceholder = (lexicalNode: LexicalNode) => {
   let placeholder = "";
   if ($isHeadingNode(lexicalNode)) {
-     const tag = lexicalNode.getTag();
-     placeholder = 'Heading';
-     switch (tag) {
-        case 'h1': {
-           placeholder += ' 1';
-           break;
-        }
-        case 'h2': {
-           placeholder += ' 2';
-           break;
-        }
-        case 'h3': {
-           placeholder += ' 3';
-           break;
-        }
-     }
+    const tag = lexicalNode.getTag();
+    placeholder = "Heading";
+    switch (tag) {
+      case "h1": {
+        placeholder += " 1";
+        break;
+      }
+      case "h2": {
+        placeholder += " 2";
+        break;
+      }
+      case "h3": {
+        placeholder += " 3";
+        break;
+      }
+    }
   }
   if ($isParagraphNode(lexicalNode)) {
-     placeholder += "Press '/' for command ";
+    placeholder += "Press '/' for command ";
   }
-  if($isListItemNode(lexicalNode)){
+  if ($isListItemNode(lexicalNode)) {
     placeholder += "Press '/' for command ";
   }
   return placeholder;
@@ -110,17 +111,21 @@ function setPlaceholderOnSelection({
   if (placeholder) {
     const selectedHtmlElement = editor.getElementByKey(anchor.key);
 
-    selectedHtmlElement?.classList.add(PLACEHOLDER_CLASS_NAME);
-    selectedHtmlElement?.setAttribute('data-placeholder', placeholder);
- }
+    if (selectedHtmlElement) {
+      selectedHtmlElement.classList.add(PLACEHOLDER_CLASS_NAME);
+      selectedHtmlElement.setAttribute("data-placeholder", placeholder);
+    }
+  }
 }
 
 export default function () {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    return editor.registerUpdateListener(() => {
-      setNodePlaceholderFromSelection(editor);
+    return editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        setNodePlaceholderFromSelection(editor);
+      });
     });
   }, [editor]);
 

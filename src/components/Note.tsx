@@ -1,5 +1,6 @@
 import ExampleTheme from "../themes/exampleTheme";
 
+import "../index.css"
 import Editor from "./Editor";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
@@ -49,7 +50,7 @@ function Note() {
 
   return (
     <>
-      <div className="bg-notearea min-h-screen w-full h-screen flex flex-row">
+      <div className="bg-black min-h-screen w-full h-screen flex flex-row">
         <LexicalComposer initialConfig={editorConfig}>
           <SharedHistoryContext>
             <SharedAutocompleteContext>
@@ -91,7 +92,7 @@ function Note() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex-1 h-full bg-notearea flex flex-col items-center space-y-4 justify-start overflow-y-auto transition-all duration-300 ease-in-out">
+                  <div className="note-class flex-1 h-full bg-black flex flex-col items-center space-y-4 justify-start overflow-y-auto transition-all duration-300 ease-in-out">
                     <Editor />
                   </div>
                 </div>
