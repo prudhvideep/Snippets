@@ -20,6 +20,7 @@ import { FiLock } from "react-icons/fi";
 import { BsMarkdown } from "react-icons/bs";
 import useFileStore from "../store/fileStore";
 import { useNavigate } from "react-router-dom";
+import { ResponseNode } from "./Nodes/ResponseNode";
 
 function Note() {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ function Note() {
       QuoteNode,
       CodeNode,
       CodeHighlightNode,
+      ResponseNode,
       TableNode,
       TableCellNode,
       TableRowNode,

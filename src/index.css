@@ -249,6 +249,38 @@ body {
   color: rgba(136, 136, 136, 0.6);
 }
 
+.custom-response {
+  background-color: #282c34;
+  color: #e77878;
+  border-radius: 3px;
+  font-family: Menlo, Consolas, Monaco, monospace;
+  display: block;
+  padding: 8px 8px 8px 52px;
+  line-height: 1.53;
+  font-size: 13px;
+  margin: 0;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  overflow: auto;
+  position: relative;
+  tab-size: 2;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 96%;
+  max-height: 500px;
+  white-space: pre;
+  scrollbar-color: #e77878 transparent;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+}
+
+
+@media (max-width: 400px) {
+  .custom-response {
+    max-width: 100%;
+  }
+}
+
 .editor-code {
   background-color: #282c34;
   color: #e77878;

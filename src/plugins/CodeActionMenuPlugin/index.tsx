@@ -2,13 +2,20 @@ import "./index.css";
 import worker from "./worker?worker";
 
 import {
+  $createCodeNode,
   $isCodeNode,
   CodeNode,
   getLanguageFriendlyName,
   normalizeCodeLang,
 } from "@lexical/code";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getNearestNodeFromDOMNode, isHTMLElement } from "lexical";
+import {
+  $createParagraphNode,
+  $createTextNode,
+  $getAdjacentNode,
+  $getNearestNodeFromDOMNode,
+  isHTMLElement,
+} from "lexical";
 import { useEffect, useRef, useState } from "react";
 import * as React from "react";
 import { createPortal } from "react-dom";
@@ -18,6 +25,7 @@ import { canBePrettier, PrettierButton } from "./components/PrettierButton";
 import { useDebounce } from "./utils";
 import useNoteLayoutStore from "../../store/noteLayoutStore";
 import { FaRegCirclePlay } from "react-icons/fa6";
+import { $createResponseNode } from "../../components/Nodes/ResponseNode";
 
 interface Position {
   top: string;
@@ -37,8 +45,8 @@ function CodeActionMenuContainer({
   const [shouldListenMouseMove, setShouldListenMouseMove] =
     useState<boolean>(false);
   const [position, setPosition] = useState<Position>({
-    right: "0",
-    top: "0",
+    right: "-100000px",
+    top: "-100000px",
   });
   const codeSetRef = useRef<Set<string>>(new Set());
   const codeDOMNodeRef = useRef<HTMLElement | null>(null);
@@ -147,9 +155,46 @@ function CodeActionMenuContainer({
 
     myWorker.postMessage(code);
 
-    myWorker.onmessage = ((event : any) => {
-      console.log(event.data)
-    })
+    myWorker.onmessage = (event: any) => {
+      console.log("event data ", event.data);
+
+      editor.update(() => {
+        const codeNode = $getNearestNodeFromDOMNode(codeDOMNode);
+
+        if (!$isCodeNode(codeNode)) {
+          console.error("The selected node is not a CodeNode.");
+          return;
+        }
+
+        const sibling = codeNode.getNextSibling();
+
+        let responseExists = false;
+
+        if (sibling && sibling.__type === "custom-response") {
+          responseExists = true;
+        }
+
+        const newNode = $createResponseNode("");
+        if (event.data.error) {
+          newNode.append($createTextNode(event.data.error + "\n"));
+          newNode.append($createTextNode(event.data.logs));
+        } else {
+          newNode.append($createTextNode(event.data.result));
+          if (event.data.logs) {
+            event.data.logs.forEach((log: string) => {
+              newNode.append($createTextNode(log + "\n"));
+            });
+          }
+        }
+
+        if (responseExists) {
+          sibling?.replace(newNode);
+          return;
+        }
+
+        codeNode.insertAfter(newNode);
+      });
+    };
   }
 
   const normalizedLang = normalizeCodeLang(lang);
@@ -158,10 +203,10 @@ function CodeActionMenuContainer({
     <>
       {isShown ? (
         <div
-          className="mr-12 md:mr-0 code-action-menu-container flex flex-row gap-2"
+          className="mr-12 lg:mr-0 code-action-menu-container flex flex-row gap-2"
           style={{ ...position }}
         >
-          <div className="hidden md:block code-highlight-language text-white">
+          <div className="hidden lg:block code-highlight-language text-white">
             {codeFriendlyName}
           </div>
           <FaRegCirclePlay
