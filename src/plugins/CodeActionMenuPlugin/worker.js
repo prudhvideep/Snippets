@@ -3,7 +3,8 @@ self.onmessage = function (event) {
 
   const logs = [];
 
-  const originalConsoleLog = console.log;
+  const originalConsoleLog = console?.log || (() => {});
+
   console.log = (...args) => {
     const logMessage = args.join(" ");
     logs.push(logMessage); 

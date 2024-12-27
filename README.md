@@ -1,50 +1,78 @@
-# React + TypeScript + Vite
+<div align="center">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<h1>
+<code>Snippets</code>
+<br clear="all">
+<a href="/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License" align="left"></a>
+</h1>
 
-Currently, two official plugins are available:
+**[Features] • [Deployment] • [Usage]**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[Features]: #features
+[Deployment]: #deployment
+[Usage]: /docs/USAGE.md
 
-## Expanding the ESLint configuration
+<img alt="Snippets" src="/public/snippets.jpg" width="500">
+<p></p>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+</div>
 
-- Configure the top-level `parserOptions` property like this:
+`Snippets` is a note taking web application designed to strip away unnecessary visual noise found in traditional note-taking tools. It's interface keeps users focused on the core task — capturing notes.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Features
+
+<details>
+<summary>
+<code>snippets</code> supports <code>rich text editing</code>.
+</summary><p></p>
+
+<img src="public/rich-text.gif" alt="Rich text" width="500">
+</details>
+
+<details>
+<summary>
+<code>Auto Save & Backup</code> 
+</summary>
+<code>Snippets</code> seamlessy backs up your notes to the cloud.
+</details>
+
+<details>
+<summary>
+<code>Code execution</code>
+</summary>
+<p></p>
+Snippets was designed to support code execution for the code blocks. In the current version, this feature only works for <code>Javascript</code> (This feature will be included in upcoming updates).
+</details>
+
+## Deployment
+
+- Clone the repository
+```bash
+git clone https://github.com/prudhvideep/Snippets.git
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- Install dpendencies
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+```bash
+pnpm install
+```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+- Configure environment variables for `Neon` and `Firebase`
+
+```bash
+VITE_DATABASE_URL = *Your Neon Db Url*
+
+#firebase keys
+VITE_FIREBASE_API_KEY =
+VITE_AUTH_DOMAIN = 
+VITE_PROJECT_ID = 
+VITE_STORAGE_BUCKET = 
+VITE_MESSAGING_SENDER_ID = 
+VITE_APP_ID = 
+```
+
+- Start the development server
+
+```bash
+pnpm dev
 ```
