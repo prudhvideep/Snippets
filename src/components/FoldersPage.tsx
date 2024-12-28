@@ -1,10 +1,8 @@
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import {
-  RiSearchLine,
   RiAddLine,
   RiFolderOpenLine,
   RiStarLine,
-  RiMoreLine,
   RiCloseLine,
   RiSunLine,
   RiMoonLine,
@@ -22,6 +20,10 @@ import FolderView from "./FolderView";
 import Folder from "../interfaces/Folder";
 import { BsTrash } from "react-icons/bs";
 import { v4 as uuid } from "uuid";
+import SearchIcon from "./Icons/SearchIcon";
+import LogoutIcon from "./Icons/LogoutIcon";
+import LightIcon from "./Icons/LightIcon";
+import DarkIcon from "./Icons/DarkIcon";
 
 const FoldersPage = () => {
   const {
@@ -54,9 +56,7 @@ const FoldersPage = () => {
       }
 
       return null;
-    },
-    staleTime : 10 * 60 * 1000,
-    gcTime : 30 * 60 * 1000,
+    }
   });
 
   const { mutate: delFolder } = useMutation({
@@ -115,6 +115,8 @@ const FoldersPage = () => {
       console.error("Error signing out: ", error);
     }
   };
+
+
 
   function renderFolders() {
     return (
@@ -178,6 +180,8 @@ const FoldersPage = () => {
     );
   }
 
+  
+
   const renderFolderContent = () => {
     if (!selectedFolder) return null;
 
@@ -211,11 +215,7 @@ const FoldersPage = () => {
 
             <div className="ml-2 mr-2 lg:mr-8 w-full md:w-auto flex justify-between items-center md:gap-4">
               <div className="relative">
-                <RiSearchLine
-                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 ${
-                    theme === "dark" ? "text-gray-400" : "text-gray-500"
-                  }`}
-                />
+                <SearchIcon />
                 <input
                   type="text"
                   placeholder="Search folders..."
@@ -247,9 +247,9 @@ const FoldersPage = () => {
                   }`}
                 >
                   {theme === "dark" ? (
-                    <RiSunLine className="h-5 w-5" />
+                    <LightIcon />
                   ) : (
-                    <RiMoonLine className="h-5 w-5" />
+                    <DarkIcon />
                   )}
                 </button>
                 <button
@@ -258,7 +258,7 @@ const FoldersPage = () => {
                     theme === "dark" ? "text-white" : "text-gray-800"
                   }`}
                 >
-                  <RiLogoutBoxRLine className="h-5 w-5" />
+                  {<LogoutIcon />}
                 </button>
               </div>
             </div>

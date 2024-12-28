@@ -50,9 +50,7 @@ export default function FolderView() {
           fileContent: file.file_content,
         }));
       }
-    },
-    staleTime : 10 * 60 * 1000,
-    gcTime : 30 * 60 * 1000,
+    }
   });
 
   const { mutate: addFile } = useMutation({
