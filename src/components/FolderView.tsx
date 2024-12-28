@@ -33,6 +33,7 @@ export default function FolderView() {
   if (!selectedFolder) return;
 
   const { data: files } = useQuery({
+    enabled : Boolean(selectedFolder && uid),
     queryKey: [selectedFolder.folder_id],
     queryFn: async () => {
       if (selectedFolder && uid) {
@@ -50,6 +51,8 @@ export default function FolderView() {
         }));
       }
     },
+    staleTime : 10 * 60 * 1000,
+    gcTime : 30 * 60 * 1000,
   });
 
   const { mutate: addFile } = useMutation({

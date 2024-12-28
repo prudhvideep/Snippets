@@ -12,7 +12,7 @@
 [Deployment]: #deployment
 [Usage]: /docs/USAGE.md
 
-<img alt="Snippets" src="/public/snippets.jpg" width="500">
+<img alt="Snippets" src="/public/snippets.jpg" width=full>
 <p></p>
 
 </div>
