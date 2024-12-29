@@ -29,6 +29,12 @@ export async function getFiles(id : string, uid : string) {
   return response;
 }
 
+export async function getFileContent(id : string, uid : string) {
+  const sql = neon(import.meta.env.VITE_DATABASE_URL || "");
+  const response = await sql`SELECT file_content from sni_files where file_id=${id} and user_id=${uid}`;
+  return response;
+}
+
 export async function createFile(selectedFile : File, folder_id : string, uid : string) {
   const sql = neon(import.meta.env.VITE_DATABASE_URL || "");
   const response = await sql`INSERT INTO sni_files (file_id,folder_id,user_id,file_name,creation_date)

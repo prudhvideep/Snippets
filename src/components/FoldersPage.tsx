@@ -56,7 +56,9 @@ const FoldersPage = () => {
       }
 
       return null;
-    }
+    },
+    staleTime : 10 * 60 * 1000,
+    gcTime : 30 * 60 * 1000,
   });
 
   const { mutate: delFolder } = useMutation({

@@ -22,6 +22,9 @@ import { useNavigate } from "react-router-dom";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import CodeActionMenuPlugin from "../plugins/CodeActionMenuPlugin";
 import FloatingLinkEditorPlugin from "../plugins/FloatingLinkEditorPlugin";
+import { getFileContent } from "../db/neon";
+import useUserStore from "../store/userStore";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Editor(): JSX.Element {
   const [editor] = useLexicalComposerContext();
@@ -29,6 +32,7 @@ export default function Editor(): JSX.Element {
     useState<HTMLDivElement | null>(null);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
 
+  const { uid } = useUserStore();
   const { selectedFile } = useFileStore();
   const navigate = useNavigate();
 
@@ -38,52 +42,48 @@ export default function Editor(): JSX.Element {
     }
   };
 
-  useEffect(() => {
-    function handleClick(event: any) {
-      const target = event.target as HTMLElement;
-
-      const checkbox = target.closest('[role="checkbox"]');
-
-      if (checkbox) {
-        const checkedVal = checkbox.getAttribute("aria-checked");
-        const newVal = checkedVal === "false" ? "true" : "false";
-        checkbox.setAttribute("aria-checked", newVal);
+  const {
+    data: fileContent,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["fileContent", selectedFile?.file_id, uid],
+    queryFn: async () => {
+      if (selectedFile?.file_id && uid) {
+        const resp = await getFileContent(selectedFile.file_id, uid);
+        return resp[0]?.file_content || null;
       }
-    }
-
-    document.addEventListener("click", handleClick);
-
-    return () => {
-      document.removeEventListener("click", handleClick);
-    };
-  }, []);
+      return null;
+    },
+    enabled: !!selectedFile?.file_id && !!uid,
+  });
 
   useEffect(() => {
-    if (selectedFile) {
+    if (fileContent) {
       editor.update(() => {
-        if (selectedFile.fileContent) {
-          const editorState = editor.parseEditorState(
-            JSON.stringify(selectedFile.fileContent)
-          );
-          editor.setEditorState(editorState);
-        }
+        const editorState = editor.parseEditorState(
+          JSON.stringify(fileContent)
+        );
+        editor.setEditorState(editorState);
       });
-    } else {
+    }
+  }, [fileContent, editor]);
+
+  useEffect(() => {
+    if (error) {
       navigate("/");
     }
-  }, [editor, selectedFile]);
+  }, [error]);
 
   useEffect(() => {
     editor.update(() => {
       const root = $getRoot();
-
       const firstChild = root.getFirstChild();
 
       if (firstChild) {
         const type = firstChild.__type;
         if (type === "paragraph") {
           const firstChildText = firstChild.getTextContent();
-
           if (firstChildText.trim() === "") {
             const h1 = $createHeadingNode("h1");
             h1.append($createTextNode(firstChildText));
@@ -93,6 +93,26 @@ export default function Editor(): JSX.Element {
       }
     });
   }, [editor]);
+
+  useEffect(() => {
+    function handleClick(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+      const checkbox = target.closest('[role="checkbox"]');
+      if (checkbox) {
+        const checkedVal = checkbox.getAttribute("aria-checked");
+        const newVal = checkedVal === "false" ? "true" : "false";
+        checkbox.setAttribute("aria-checked", newVal);
+      }
+    }
+
+    document.addEventListener("click", handleClick);
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, []);
+
+  if (isLoading) return <div>Loading file...</div>;
+  if (error) return <div>Failed to load the file content. Redirecting...</div>;
 
   return (
     <div className="editor-container w-8/10">
@@ -112,7 +132,6 @@ export default function Editor(): JSX.Element {
         <CheckListPlugin />
         <AutoFocusPlugin />
         <AutoSavePlugin />
-
         <CodeHighlightPlugin />
         <TabIndentationPlugin />
         <ComponentPickerPlugin />

@@ -14,7 +14,6 @@ import { File } from "../interfaces/File";
 import useUserStore from "../store/userStore";
 import { BsTrash } from "react-icons/bs";
 
-
 export default function FolderView() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -33,7 +32,7 @@ export default function FolderView() {
   if (!selectedFolder) return;
 
   const { data: files } = useQuery({
-    enabled : Boolean(selectedFolder && uid),
+    enabled: Boolean(selectedFolder && uid),
     queryKey: [selectedFolder.folder_id],
     queryFn: async () => {
       if (selectedFolder && uid) {
@@ -47,10 +46,11 @@ export default function FolderView() {
             day: "numeric",
             year: "numeric",
           }).format(new Date(file.last_updated_date)),
-          fileContent: file.file_content,
         }));
       }
-    }
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   const { mutate: addFile } = useMutation({
@@ -71,9 +71,9 @@ export default function FolderView() {
         await deleteFile(file.file_id, uid);
       }
     },
-    onSuccess : () => {
-      queryClient.invalidateQueries({queryKey : [selectedFolder.folder_id]})
-    }
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [selectedFolder.folder_id] });
+    },
   });
 
   return (
@@ -139,11 +139,12 @@ export default function FolderView() {
                 </span>
               </div>
               <BsTrash
-              onClick={(event : React.MouseEvent) => {
-                event.stopPropagation()
-                removeFile(file)
-              }} 
-              className="text-white font-medium text-xl hover:text-gray-400"/>
+                onClick={(event: React.MouseEvent) => {
+                  event.stopPropagation();
+                  removeFile(file);
+                }}
+                className="text-white font-medium text-xl hover:text-gray-400"
+              />
             </div>
           ))}
       </div>
@@ -208,7 +209,6 @@ export default function FolderView() {
                       file_id: uuid(),
                       file_name: newFileName,
                       lastEdited: "",
-                      fileContent: null,
                     };
 
                     addFile(newFile);
