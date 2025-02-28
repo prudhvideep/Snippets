@@ -1,17 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
-import { Folder } from "@/types/types";
+import { File } from "@/types/types";
 
-function useFoldersQuery() {
+function useFoldersQuery(folder_id: string, is_enabled: true) {
   const client = useSupabase();
 
-  return useQuery<Folder[]>({
-    queryKey: ["folders"],
-    queryFn : async () => {
+  return useQuery<File[]>({
+    queryKey: ["files", folder_id],
+    queryFn: async () => {
       const { data, error } = await client
-        .from("sni_folders")
+        .from("sni_files")
         .select("*")
-        .order("folder_name");
+        .eq("folder_id", folder_id)
+        .order("file_name");
 
       if (error) {
         console.error("Error fetching folders:", error);
@@ -20,8 +21,8 @@ function useFoldersQuery() {
 
       return data || [];
     },
-    staleTime : 60000,
-    refetchOnWindowFocus : true
+    staleTime: 60000,
+    enabled: is_enabled,
   });
 }
 
