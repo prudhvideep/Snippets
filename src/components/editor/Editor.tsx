@@ -84,7 +84,7 @@ export default function Editor() {
       <div className="editor-container h-full w-full flex flex-row justify-start overflow-auto ">
         <Sidebar />
         <div
-          className={`p-2 ${sidebarExpanded ? "w-0 md:w-[95%] lg:w-[70%] overflow-hidden" : "w-[95%] lg:w-[70%]"}  ml-auto mr-auto`}
+          className={`p-2 ${sidebarExpanded ? "w-0 md:w-[95%] lg:w-[70%] overflow-hidden md:overflow-auto" : "w-[95%] lg:w-[70%]"}  ml-auto mr-auto`}
           spellCheck={false}
         >
           <BlockNoteView
