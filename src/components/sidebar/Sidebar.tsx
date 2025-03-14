@@ -17,8 +17,11 @@ import useUpdateFolderFavourites from "@/hooks/useUpdateFolderFavourites";
 import useDeleteQuery from "@/hooks/useDeleteQuery";
 import useUpdateFolderExpansion from "@/hooks/useUpdateFolderExpansion";
 import useCreateFileQuery from "@/hooks/useCreateFileQuery";
+import useEditorStore from "@/store/editorStore";
 
 export default function Sidebar() {
+  const { sidebarExpanded } = useEditorStore();
+
   const { mutate: createFolder } = useCreateFolderQuery();
   const { mutate: deleteFolder } = useDeleteQuery();
   const { mutate: updateExpansion } = useUpdateFolderExpansion();
@@ -46,7 +49,9 @@ export default function Sidebar() {
 
   return (
     <div
-      className={` sidebar flex flex-col items-center h-full border-r border-neutral-500 transition-all delay-75 duration-300 ease-in-out overflow-auto`}
+      className={` sidebar flex flex-col items-start h-full ${
+        sidebarExpanded ? "w-[90%] lg:w-1/5  ml-2 border-r border-neutral-500" : "w-0"
+      }   transition-all delay-75 duration-300 ease-in-out overflow-auto`}
     >
       <div className="relative mt-4 w-9/10 flex flex-col items-center">
         <input
@@ -140,7 +145,7 @@ export default function Sidebar() {
           )}
       </div>
 
-      <div className="mt-4 flex flex-col gap-1 w-9/10">
+      <div className=" mt-4 flex flex-col gap-1 w-9/10">
         <div
           draggable
           className="p-2 text-sm flex flex-row text-gray-300 font-medium justify-between items-center rounded-md hover:bg-neutral-700 "
