@@ -12,6 +12,7 @@ import {
 } from "react-icons/tb";
 
 import useUpdateFileData from "@/hooks/useUpdateFileData";
+import Sidebar from "../sidebar/Sidebar";
 
 export default function Editor() {
   const editor = useCreateBlockNote();
@@ -46,9 +47,9 @@ export default function Editor() {
 
   return (
     <div className=" h-full w-full flex flex-col overflow-hidden">
-      <div className="h-[7%]">
+      <div className="h-[7%] min-h-10">
         <div className="h-full w-full flex flex-row justify-between border-b border-neutral-500">
-          <div className="p-2 flex flex-row gap-2 justify-start items-center w-1/3 hover:cursor-pointer">
+          <div className="p-2 flex flex-row gap-2 justify-start items-center  hover:cursor-pointer">
             {sidebarExpanded ? (
               <TbLayoutSidebarLeftCollapse
                 onClick={() => setSidebarExpanded(!sidebarExpanded)}
@@ -64,20 +65,28 @@ export default function Editor() {
             <div className="flex flex-row items-center text-gray-400 text-sm font-medium">
               <div className="flex items-center space-x-1"></div>
               <span className="px-2 py-1 rounded-md hover:bg-neutral-700 transition duration-200 cursor-pointer">
-                {folders?.find((f) => f.folder_id === selectedFile?.folder_id)
-                  ?.folder_name || "Untitled Folder"}
+                {
+                  folders?.find((f) => f.folder_id === selectedFile?.folder_id)
+                    ?.folder_name
+                }
               </span>
-              <span className="text-gray-500">/</span>
+              {selectedFile?.file_name && (
+                <span className="text-gray-500">/</span>
+              )}
 
               <span className="px-2 py-1 rounded-md hover:bg-neutral-700 transition duration-200 cursor-pointer">
-                {selectedFile?.file_name || "Untitled File"}
+                {selectedFile?.file_name}
               </span>
             </div>
           </div>
         </div>
       </div>
-      <div className="editor-container h-full w-full place-items-center overflow-auto">
-        <div className="p-2 w-[95%] md:w-[70%]">
+      <div className="editor-container h-full w-full flex flex-row justify-start overflow-auto ">
+        <Sidebar />
+        <div
+          className={`p-2 ${sidebarExpanded ? "w-0 md:w-[95%] lg:w-[70%] overflow-hidden" : "w-[95%] lg:w-[70%]"}  ml-auto mr-auto`}
+          spellCheck={false}
+        >
           <BlockNoteView
             editor={editor}
             onChange={() => {

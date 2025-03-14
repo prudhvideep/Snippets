@@ -1,6 +1,7 @@
 .editor-container {
-  scrollbar-width: thin; /* Makes the scrollbar thinner */
-  scrollbar-color: rgb(144, 144, 229) transparent; /* Thumb (red) & Track (transparent) */
+  scrollbar-width: thin; 
+  scrollbar-color: rgb(144, 144, 229) transparent; 
+  background-color: #1f1f1f;
 }
 
 .editor-container a {
@@ -13,14 +14,13 @@
   cursor: pointer;
 }
 
-/* For WebKit Browsers (Chrome, Safari, Edge) */
 .editor-container::-webkit-scrollbar {
   width: 4px; /* Thin scrollbar */
 }
 
 .editor-container::-webkit-scrollbar-thumb {
-  background-color: rgb(144, 144, 229); /* Scrollbar thumb color */
-  border-radius: 4px; /* Rounded edges */
+  background-color: rgb(144, 144, 229); 
+  border-radius: 4px; 
 }
 
 .editor-container::-webkit-scrollbar-track {
@@ -39,4 +39,5 @@
   font-size: 0.9em;
   font-family: monospace;
 }
+
 
