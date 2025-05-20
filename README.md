@@ -17,7 +17,7 @@
 
 </div>
 
-`Snippets` is a note taking web application designed to strip away unnecessary visual noise found in traditional note-taking tools. It's interface keeps users focused on the core task — capturing notes.
+`Snippets` is a note taking web application designed to strip away unnecessary visual noise found in traditional note-taking tools. It's interface keeps users focused only on capturing notes.
 
 > [!IMPORTANT]
 >
