@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useSupabase from "./useSupabase";
 import { File } from "@/types/types";
 
-function useFoldersQuery(folder_id: string, is_enabled: true) {
+function useFilesQuery(folder_id: string, is_enabled: true) {
   const client = useSupabase();
 
   return useQuery<File[]>({
@@ -26,4 +26,4 @@ function useFoldersQuery(folder_id: string, is_enabled: true) {
   });
 }
 
-export default useFoldersQuery;
+export default useFilesQuery;

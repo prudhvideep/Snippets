@@ -4,6 +4,12 @@
   background-color: #1f1f1f;
 }
 
+.editor-tab {
+  scrollbar-width: thin; 
+  scrollbar-color: rgb(144, 144, 229) transparent; 
+  background-color: #1f1f1f;
+}
+
 .editor-container a {
   color: rgb(144, 144, 229);
 }
