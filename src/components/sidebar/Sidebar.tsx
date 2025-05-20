@@ -1,9 +1,5 @@
-import {
-  FaChevronDown,
-  FaChevronRight,
-  FaRegStar,
-  FaSearch,
-} from "react-icons/fa";
+import { FaChevronDown, FaChevronRight, FaRegStar } from "react-icons/fa";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { MdDeleteOutline } from "react-icons/md";
 import { Folder, File } from "@/types/types";
 import { FaPlus } from "react-icons/fa";
@@ -20,7 +16,7 @@ import useCreateFileQuery from "@/hooks/useCreateFileQuery";
 import useEditorStore from "@/store/editorStore";
 
 export default function Sidebar() {
-  const { sidebarExpanded } = useEditorStore();
+  const { sidebarExpanded, setSidebarExpanded } = useEditorStore();
 
   const { mutate: createFolder } = useCreateFolderQuery();
   const { mutate: deleteFolder } = useDeleteQuery();
@@ -49,128 +45,44 @@ export default function Sidebar() {
 
   return (
     <div
-      className={` sidebar flex flex-col items-start h-full ${
-        sidebarExpanded ? "w-[90%] lg:w-1/5  ml-2 border-r border-neutral-500" : "w-0"
+      className={` sidebar flex flex-col items-center h-full ${
+        sidebarExpanded
+          ? "md:w-1/2 lg:w-[30%] border-r border-neutral-500"
+          : "w-[4%] border-r border-neutral-500"
       }   transition-all delay-75 duration-300 ease-in-out overflow-auto`}
     >
-      <div className="relative mt-4 w-9/10 flex flex-col items-center">
-        <input
-          placeholder="Search"
-          className=" p-2 pl-8 pr-2 rounded-md w-[95%] bg-inherit outline-none hover:bg-neutral-700 placeholder:font-semibold"
-        />
-        <FaSearch className="absolute left-4 top-3 text-neutral-400" />
-      </div>
-
-      <div className="mt-4 flex flex-col w-9/10" draggable>
-        <p className="p-2 text-sm text-gray-300 font-medium justify-start rounded-md hover:bg-neutral-700">
-          Pinned
-        </p>
-      </div>
-
-      <div className="mt-4 flex flex-col w-9/10" draggable>
-        <p className="p-2 text-sm text-gray-300 font-medium justify-start rounded-md hover:bg-neutral-700">
-          Favourites
-        </p>
-        {folders &&
-          folders.map(
-            (folder: Folder) =>
-              folder.is_favourite && (
-                <div key={folder.folder_id} className="flex flex-col">
-                  <div
-                    onClick={async () => {
-                      await updateExpansion(folder);
-                    }}
-                    className="p-2 flex ml-2 pr-2 flex-row justify-between items-center rounded-md hover:bg-neutral-700 hover:cursor-pointer truncate"
-                  >
-                    <>
-                      <div className="flex flex-row items-center text-gray-300 gap-2">
-                        {!folder.is_expanded ? (
-                          <FaChevronRight className="text-sm font-normal" />
-                        ) : (
-                          <FaChevronDown className="text-sm font-normal" />
-                        )}
-                        <p className="truncate font-normal text-ellipsis overflow-hidden">
-                          {folder.folder_name}
-                        </p>
-                      </div>
-                      <div className="flex flex-row gap-1 items-center">
-                        <MdDeleteOutline
-                          onClick={async (e: any) => {
-                            e.stopPropagation();
-                            await deleteFolder(folder);
-                          }}
-                          className="text-lg text-gray-300 hover:text-gray-400 hover:cursor-pointer"
-                        />
-                        {folder.is_expanded && (
-                          <FaPlus
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              setNewFileFolderId(folder.folder_id);
-                            }}
-                            className="text-sm text-gray-300 hover:text-gray-400 hover:cursor-pointer"
-                          />
-                        )}
-                      </div>
-                    </>
-                  </div>
-                  {folder.is_expanded && (
-                    <FolderFiles folderId={folder.folder_id} />
-                  )}
-                  {folder.folder_id === newFileFolderId && (
-                    <input
-                      value={newFileName || ""}
-                      onChange={(e: any) => setNewFileName(e.target.value)}
-                      onKeyDown={async (e: any) => {
-                        if (e.key === "Enter") {
-                          let newFile: File = {
-                            file_id: nanoid(10),
-                            folder_id: folder.folder_id,
-                            file_name: newFileName || "",
-                            file_data: null,
-                            is_pinned: false,
-                          };
-
-                          await HandleCreateFile(newFile);
-                        } else if (e.key === "Escape") {
-                          setNewFolderName("");
-                          setDisplayNewFolder(false);
-                        }
-                      }}
-                      placeholder="New File"
-                      className="p-1 ml-auto mr-4 w-3/4 border rounded-md bg-inherit outline-none placeholder:text-gray-400"
-                    />
-                  )}
-                </div>
-              )
+      {
+        <div className={`mt-4 flex flex-col w-9/10 ${sidebarExpanded ? "" : ""}`} draggable>
+          <div className="p-2 mb-2">
+            {sidebarExpanded ? (
+              <GiHamburgerMenu
+                onClick={() => setSidebarExpanded(!sidebarExpanded)}
+                className="text-2xl font-thin hover:text-neutral-400 hover:cursor-pointer"
+              />
+            ) : (
+              <GiHamburgerMenu
+                onClick={() => setSidebarExpanded(!sidebarExpanded)}
+                className="text-2xl font-thin  hover:text-neutral-400 hover:cursor-pointer"
+              />
+            )}
+          </div>
+          {sidebarExpanded && (
+            <p className="p-2 text-sm text-gray-300 font-medium justify-start rounded-md hover:bg-neutral-700">
+              Favourites
+            </p>
           )}
-      </div>
-
-      <div className=" mt-4 flex flex-col gap-1 w-9/10">
-        <div
-          draggable
-          className="p-2 text-sm flex flex-row text-gray-300 font-medium justify-between items-center rounded-md hover:bg-neutral-700 "
-        >
-          <p className="">Private</p>
-          <FaPlus
-            onClick={() => {
-              setDisplayNewFolder(true);
-            }}
-            className=" hover:text-gray-400 hover:cursor-pointer"
-          />
-        </div>
-
-        {folders &&
-          folders.map(
-            (folder: Folder) =>
-              !folder.is_favourite && (
-                <div key={folder.folder_id} className="flex flex-col">
-                  <div
-                    onClick={async () => {
-                      await updateExpansion(folder);
-                    }}
-                    className="p-2 flex ml-2 pr-2 flex-row justify-between items-center rounded-md hover:bg-neutral-700 hover:cursor-pointer truncate"
-                  >
-                    {folder.folder_name !== "" && (
+          {sidebarExpanded &&
+            folders &&
+            folders.map(
+              (folder: Folder) =>
+                folder.is_favourite && (
+                  <div key={folder.folder_id} className="flex flex-col">
+                    <div
+                      onClick={async () => {
+                        await updateExpansion(folder);
+                      }}
+                      className="p-2 flex ml-2 pr-2 flex-row justify-between items-center rounded-md hover:bg-neutral-700 hover:cursor-pointer truncate"
+                    >
                       <>
                         <div className="flex flex-row items-center text-gray-300 gap-2">
                           {!folder.is_expanded ? (
@@ -178,18 +90,11 @@ export default function Sidebar() {
                           ) : (
                             <FaChevronDown className="text-sm font-normal" />
                           )}
-                          <p className="truncate font-normal text-md text-ellipsis overflow-hidden">
+                          <p className="truncate font-normal overflow-hidden">
                             {folder.folder_name}
                           </p>
                         </div>
                         <div className="flex flex-row gap-1 items-center">
-                          <FaRegStar
-                            onClick={async (e: any) => {
-                              e.stopPropagation();
-                              await updateFavourite(folder);
-                            }}
-                            className="text-md font-semibold text-gray-300 hover:text-gray-400 hover:cursor-pointer"
-                          />
                           <MdDeleteOutline
                             onClick={async (e: any) => {
                               e.stopPropagation();
@@ -208,63 +113,162 @@ export default function Sidebar() {
                           )}
                         </div>
                       </>
+                    </div>
+                    {folder.is_expanded && (
+                      <FolderFiles folderId={folder.folder_id} />
+                    )}
+                    {folder.folder_id === newFileFolderId && (
+                      <input
+                        value={newFileName || ""}
+                        onChange={(e: any) => setNewFileName(e.target.value)}
+                        onKeyDown={async (e: any) => {
+                          if (e.key === "Enter") {
+                            let newFile: File = {
+                              file_id: nanoid(10),
+                              folder_id: folder.folder_id,
+                              file_name: newFileName || "",
+                              file_data: null,
+                              is_pinned: false,
+                            };
+
+                            await HandleCreateFile(newFile);
+                          } else if (e.key === "Escape") {
+                            setNewFolderName("");
+                            setDisplayNewFolder(false);
+                          }
+                        }}
+                        placeholder="New File"
+                        className="p-1 ml-auto mr-4 w-3/4 border rounded-md bg-inherit outline-none placeholder:text-gray-400"
+                      />
                     )}
                   </div>
-                  {folder.is_expanded && (
-                    <FolderFiles folderId={folder.folder_id} />
-                  )}
-                  {folder.folder_id === newFileFolderId && (
-                    <input
-                      value={newFileName || ""}
-                      onChange={(e: any) => setNewFileName(e.target.value)}
-                      onKeyDown={async (e: any) => {
-                        if (e.key === "Enter") {
-                          let newFile: File = {
-                            file_id: nanoid(10),
-                            folder_id: folder.folder_id,
-                            file_name: newFileName || "",
-                            file_data: null,
-                            is_pinned: false,
-                          };
+                )
+            )}
+        </div>
+      }
 
-                          await HandleCreateFile(newFile);
-                        } else if (e.key === "Escape") {
-                          setNewFolderName("");
-                          setDisplayNewFolder(false);
-                        }
+      {sidebarExpanded && (
+        <div className=" mt-4 flex flex-col gap-1 w-9/10">
+          <div
+            draggable
+            className="p-2 text-sm flex flex-row text-gray-300 font-medium justify-between items-center rounded-md hover:bg-neutral-700 "
+          >
+            <p className="">Private</p>
+            <FaPlus
+              onClick={() => {
+                setDisplayNewFolder(true);
+              }}
+              className=" hover:text-gray-400 hover:cursor-pointer"
+            />
+          </div>
+
+          {folders &&
+            folders.map(
+              (folder: Folder) =>
+                !folder.is_favourite && (
+                  <div key={folder.folder_id} className="flex flex-col">
+                    <div
+                      onClick={async () => {
+                        await updateExpansion(folder);
                       }}
-                      placeholder="New File"
-                      className="p-1 ml-auto mr-4 w-3/4 border rounded-md bg-inherit outline-none placeholder:text-gray-400"
-                    />
-                  )}
-                </div>
-              )
+                      className="p-2 flex ml-2 pr-2 flex-row justify-between items-center rounded-md hover:bg-neutral-700 hover:cursor-pointer truncate"
+                    >
+                      {folder.folder_name !== "" && (
+                        <>
+                          <div className="flex flex-row items-center text-gray-300 gap-2">
+                            {!folder.is_expanded ? (
+                              <FaChevronRight className="text-sm font-normal" />
+                            ) : (
+                              <FaChevronDown className="text-sm font-normal" />
+                            )}
+                            <p className="truncate font-normal text-md text-ellipsis overflow-hidden">
+                              {folder.folder_name}
+                            </p>
+                          </div>
+                          <div className="flex flex-row gap-1 items-center">
+                            <FaRegStar
+                              onClick={async (e: any) => {
+                                e.stopPropagation();
+                                await updateFavourite(folder);
+                              }}
+                              className="text-md font-semibold text-gray-300 hover:text-gray-400 hover:cursor-pointer"
+                            />
+                            <MdDeleteOutline
+                              onClick={async (e: any) => {
+                                e.stopPropagation();
+                                await deleteFolder(folder);
+                              }}
+                              className="text-lg text-gray-300 hover:text-gray-400 hover:cursor-pointer"
+                            />
+                            {folder.is_expanded && (
+                              <FaPlus
+                                onClick={(e: any) => {
+                                  e.stopPropagation();
+                                  setNewFileFolderId(folder.folder_id);
+                                }}
+                                className="text-sm text-gray-300 hover:text-gray-400 hover:cursor-pointer"
+                              />
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    {folder.is_expanded && (
+                      <FolderFiles folderId={folder.folder_id} />
+                    )}
+                    {folder.folder_id === newFileFolderId && (
+                      <input
+                        value={newFileName || ""}
+                        onChange={(e: any) => setNewFileName(e.target.value)}
+                        onKeyDown={async (e: any) => {
+                          if (e.key === "Enter") {
+                            let newFile: File = {
+                              file_id: nanoid(10),
+                              folder_id: folder.folder_id,
+                              file_name: newFileName || "",
+                              file_data: null,
+                              is_pinned: false,
+                            };
+
+                            await HandleCreateFile(newFile);
+                          } else if (e.key === "Escape") {
+                            setNewFolderName("");
+                            setDisplayNewFolder(false);
+                          }
+                        }}
+                        placeholder="New File"
+                        className="p-1 ml-auto mr-4 w-3/4 border rounded-md bg-inherit outline-none placeholder:text-gray-400"
+                      />
+                    )}
+                  </div>
+                )
+            )}
+
+          {displayNewFolder && (
+            <input
+              value={newFolderName || ""}
+              onChange={(e: any) => setNewFolderName(e.target.value)}
+              onKeyDown={async (e: any) => {
+                if (e.key === "Enter") {
+                  let newFolder: Folder = {
+                    folder_id: nanoid(10),
+                    folder_name: newFolderName || "",
+                    is_favourite: false,
+                    is_expanded: false,
+                  };
+
+                  await HandleCreateFolder(newFolder);
+                } else if (e.key === "Escape") {
+                  setNewFolderName("");
+                  setDisplayNewFolder(false);
+                }
+              }}
+              placeholder="New Folder"
+              className="p-1 border rounded-md bg-inherit outline-none placeholder:text-gray-400"
+            />
           )}
-
-        {displayNewFolder && (
-          <input
-            value={newFolderName || ""}
-            onChange={(e: any) => setNewFolderName(e.target.value)}
-            onKeyDown={async (e: any) => {
-              if (e.key === "Enter") {
-                let newFolder: Folder = {
-                  folder_id: nanoid(10),
-                  folder_name: newFolderName || "",
-                  is_favourite: false,
-                  is_expanded: false,
-                };
-
-                await HandleCreateFolder(newFolder);
-              } else if (e.key === "Escape") {
-                setNewFolderName("");
-                setDisplayNewFolder(false);
-              }
-            }}
-            placeholder="New Folder"
-            className="p-1 border rounded-md bg-inherit outline-none placeholder:text-gray-400"
-          />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

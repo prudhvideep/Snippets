@@ -1,27 +1,25 @@
 import "./Editor.css";
 import { useEffect } from "react";
 import { Block } from "@blocknote/core";
-import useFoldersQuery from "@/hooks/useFoldersQuery";
 import useEditorStore from "@/store/editorStore";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
 import { useDebouncedCallback } from "use-debounce";
-import {
-  TbLayoutSidebarLeftCollapse,
-  TbLayoutSidebarRightCollapse,
-} from "react-icons/tb";
 
 import useUpdateFileData from "@/hooks/useUpdateFileData";
 import Sidebar from "../sidebar/Sidebar";
+import { File } from "@/types/types";
+import Tab from "../tab/Tab";
 
 export default function Editor() {
   const editor = useCreateBlockNote();
-  const { data: folders } = useFoldersQuery();
   const { mutate: updateFileData } = useUpdateFileData();
-  const { selectedFile, sidebarExpanded, setSidebarExpanded } =
+  const { showEditor, selectedFile, openedFiles, sidebarExpanded } =
     useEditorStore();
 
   useEffect(() => {
+    if (!showEditor) return;
+
     if (!selectedFile) {
       editor.replaceBlocks(editor.document, []);
       return;
@@ -34,7 +32,7 @@ export default function Editor() {
       console.error("Error loading file content:", error);
       editor.replaceBlocks(editor.document, []);
     }
-  }, [selectedFile, editor]);
+  }, [selectedFile, showEditor, editor]);
 
   const debouncedUpdateFile = useDebouncedCallback((fileData: Block[]) => {
     if (selectedFile) {
@@ -46,54 +44,38 @@ export default function Editor() {
   }, 1000);
 
   return (
-    <div className=" h-full w-full flex flex-col overflow-hidden">
-      <div className="h-[7%] min-h-10">
-        <div className="h-full w-full flex flex-row justify-between border-b border-neutral-500">
-          <div className="p-2 flex flex-row gap-2 justify-start items-center  hover:cursor-pointer">
-            {sidebarExpanded ? (
-              <TbLayoutSidebarLeftCollapse
-                onClick={() => setSidebarExpanded(!sidebarExpanded)}
-                className="text-3xl font-thin text-neutral-300 hover:text-neutral-400"
-              />
-            ) : (
-              <TbLayoutSidebarRightCollapse
-                onClick={() => setSidebarExpanded(!sidebarExpanded)}
-                className="text-3xl font-thin text-neutral-300 hover:text-neutral-400"
-              />
-            )}
-
-            <div className="flex flex-row items-center text-gray-400 text-sm font-medium">
-              <div className="flex items-center space-x-1"></div>
-              <span className="px-2 py-1 rounded-md hover:bg-neutral-700 transition duration-200 cursor-pointer">
-                {
-                  folders?.find((f) => f.folder_id === selectedFile?.folder_id)
-                    ?.folder_name
-                }
-              </span>
-              {selectedFile?.file_name && (
-                <span className="text-gray-500">/</span>
-              )}
-
-              <span className="px-2 py-1 rounded-md hover:bg-neutral-700 transition duration-200 cursor-pointer">
-                {selectedFile?.file_name}
-              </span>
+    <div className="h-full w-full flex flex-col overflow-hidden">
+      <div className="editor-container h-full w-full flex flex-row justify-start overflow-hidden">
+        <Sidebar />
+        <div className="flex flex-col w-full overflow-hidden">
+          <div className="w-full h-16">
+            <div className="editor-tab flex flex-row overflow-auto border-b border-neutral-600">
+              {openedFiles.length > 0 &&
+                openedFiles.map((file: File) => (
+                  <Tab
+                    key={file.file_id}
+                    fileId={file.file_id}
+                    fileName={file.file_name}
+                  />
+                ))}
             </div>
           </div>
-        </div>
-      </div>
-      <div className="editor-container h-full w-full flex flex-row justify-start overflow-auto ">
-        <Sidebar />
-        <div
-          className={`p-2 ${sidebarExpanded ? "w-0 md:w-[95%] lg:w-[70%] overflow-hidden md:overflow-auto" : "w-[95%] lg:w-[70%]"}  ml-auto mr-auto`}
-          spellCheck={false}
-        >
-          <BlockNoteView
-            editor={editor}
-            onChange={() => {
-              if (selectedFile) debouncedUpdateFile(editor.document);
-            }}
-            editor-note-view="true"
-          />
+          {showEditor && <div
+            className={`p-2 ${
+              sidebarExpanded
+                ? "w-0 md:w-[95%] lg:w-[70%] overflow-hidden md:overflow-auto"
+                : "w-[95%] lg:w-[70%]"
+            }  ml-auto mr-auto`}
+            spellCheck={false}
+          >
+            <BlockNoteView
+              editor={editor}
+              onChange={() => {
+                if (selectedFile) debouncedUpdateFile(editor.document);
+              }}
+              editor-note-view="true"
+            />
+          </div>}
         </div>
       </div>
     </div>
