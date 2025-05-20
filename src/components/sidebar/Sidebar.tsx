@@ -48,7 +48,7 @@ export default function Sidebar() {
       className={` sidebar flex flex-col items-center h-full ${
         sidebarExpanded
           ? "md:w-1/2 lg:w-[30%] border-r border-neutral-500"
-          : "w-[4%] border-r border-neutral-500"
+          : "w-[10%] md:w-[5%] lg:w-[4%] border-r border-neutral-500"
       }   transition-all delay-75 duration-300 ease-in-out overflow-auto`}
     >
       {
