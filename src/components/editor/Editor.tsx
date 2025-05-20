@@ -47,9 +47,9 @@ export default function Editor() {
     <div className="h-full w-full flex flex-col overflow-hidden">
       <div className="editor-container h-full w-full flex flex-row justify-start overflow-hidden">
         <Sidebar />
-        <div className="flex flex-col w-full overflow-hidden">
-          <div className="w-full h-16">
-            <div className="editor-tab flex flex-row overflow-auto border-b border-neutral-600">
+        <div className="flex flex-col w-full overflow-clip">
+          <div className="w-full h-16 shrink-0">
+            <div className="editor-tab flex flex-row overflow-auto border-b border-neutral-600 h-full">
               {openedFiles.length > 0 &&
                 openedFiles.map((file: File) => (
                   <Tab
@@ -60,22 +60,24 @@ export default function Editor() {
                 ))}
             </div>
           </div>
-          {showEditor && <div
-            className={`p-2 ${
-              sidebarExpanded
-                ? "w-0 md:w-[95%] lg:w-[70%] overflow-hidden md:overflow-auto"
-                : "w-[95%] lg:w-[70%]"
-            }  ml-auto mr-auto`}
-            spellCheck={false}
-          >
-            <BlockNoteView
-              editor={editor}
-              onChange={() => {
-                if (selectedFile) debouncedUpdateFile(editor.document);
-              }}
-              editor-note-view="true"
-            />
-          </div>}
+
+          {showEditor && (
+            <div
+              className={`p-2 flex-1 overflow-auto  ${
+                sidebarExpanded
+                  ? "w-0 md:w-[95%] lg:w-[70%]"
+                  : "w-[95%] lg:w-[70%]"
+              } ml-auto mr-auto`}
+              spellCheck={false}
+            >
+              <BlockNoteView
+                editor={editor}
+                onChange={() => {
+                  if (selectedFile) debouncedUpdateFile(editor.document);
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
