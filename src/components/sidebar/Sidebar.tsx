@@ -118,28 +118,47 @@ export default function Sidebar() {
                       <FolderFiles folderId={folder.folder_id} />
                     )}
                     {folder.folder_id === newFileFolderId && (
-                      <input
-                        value={newFileName || ""}
-                        onChange={(e: any) => setNewFileName(e.target.value)}
-                        onKeyDown={async (e: any) => {
-                          if (e.key === "Enter") {
-                            let newFile: File = {
-                              file_id: nanoid(10),
-                              folder_id: folder.folder_id,
-                              file_name: newFileName || "",
-                              file_data: null,
-                              is_pinned: false,
-                            };
-
-                            await HandleCreateFile(newFile);
-                          } else if (e.key === "Escape") {
-                            setNewFolderName("");
-                            setDisplayNewFolder(false);
-                          }
-                        }}
-                        placeholder="New File"
-                        className="p-1 ml-auto mr-4 w-3/4 border rounded-md bg-inherit outline-none placeholder:text-gray-400"
-                      />
+                      <div className="pl-6 pr-3 my-1">
+                        <div className="flex items-center bg-neutral-800 rounded-md overflow-hidden border border-neutral-700 shadow-md">
+                          <input
+                            value={newFileName || ""}
+                            onChange={(e: any) => setNewFileName(e.target.value)}
+                            onKeyDown={async (e: any) => {
+                              if (e.key === "Enter") {
+                                let newFile: File = {
+                                  file_id: nanoid(10),
+                                  folder_id: folder.folder_id,
+                                  file_name: newFileName || "",
+                                  file_data: null,
+                                  is_pinned: false,
+                                };
+                                await HandleCreateFile(newFile);
+                              } else if (e.key === "Escape") {
+                                setNewFileName("");
+                                setNewFileFolderId(null);
+                              }
+                            }}
+                            placeholder="New File"
+                            className="p-2 flex-grow bg-transparent outline-none placeholder:text-neutral-500 text-gray-200"
+                            autoFocus
+                          />
+                          <button 
+                            onClick={async () => {
+                              let newFile: File = {
+                                file_id: nanoid(10),
+                                folder_id: folder.folder_id,
+                                file_name: newFileName || "",
+                                file_data: null,
+                                is_pinned: false,
+                              };
+                              await HandleCreateFile(newFile);
+                            }}
+                            className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
+                          >
+                            Add
+                          </button>
+                        </div>
+                      </div>
                     )}
                   </div>
                 )
@@ -217,55 +236,92 @@ export default function Sidebar() {
                       <FolderFiles folderId={folder.folder_id} />
                     )}
                     {folder.folder_id === newFileFolderId && (
-                      <input
-                        value={newFileName || ""}
-                        onChange={(e: any) => setNewFileName(e.target.value)}
-                        onKeyDown={async (e: any) => {
-                          if (e.key === "Enter") {
-                            let newFile: File = {
-                              file_id: nanoid(10),
-                              folder_id: folder.folder_id,
-                              file_name: newFileName || "",
-                              file_data: null,
-                              is_pinned: false,
-                            };
-
-                            await HandleCreateFile(newFile);
-                          } else if (e.key === "Escape") {
-                            setNewFolderName("");
-                            setDisplayNewFolder(false);
-                          }
-                        }}
-                        placeholder="New File"
-                        className="p-1 ml-auto mr-4 w-3/4 border rounded-md bg-inherit outline-none placeholder:text-gray-400"
-                      />
+                      <div className="pl-6 pr-3 my-1">
+                        <div className="flex items-center bg-neutral-800 rounded-md overflow-hidden border border-neutral-700 shadow-md">
+                          <input
+                            value={newFileName || ""}
+                            onChange={(e: any) => setNewFileName(e.target.value)}
+                            onKeyDown={async (e: any) => {
+                              if (e.key === "Enter") {
+                                let newFile: File = {
+                                  file_id: nanoid(10),
+                                  folder_id: folder.folder_id,
+                                  file_name: newFileName || "",
+                                  file_data: null,
+                                  is_pinned: false,
+                                };
+                                await HandleCreateFile(newFile);
+                              } else if (e.key === "Escape") {
+                                setNewFileName("");
+                                setNewFileFolderId(null);
+                              }
+                            }}
+                            placeholder="New File"
+                            className="p-2 flex-grow bg-transparent outline-none placeholder:text-neutral-500 text-gray-200"
+                            autoFocus
+                          />
+                          <button 
+                            onClick={async () => {
+                              let newFile: File = {
+                                file_id: nanoid(10),
+                                folder_id: folder.folder_id,
+                                file_name: newFileName || "",
+                                file_data: null,
+                                is_pinned: false,
+                              };
+                              await HandleCreateFile(newFile);
+                            }}
+                            className="px-3 py-2 rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium transition-colors"
+                          >
+                            Add
+                          </button>
+                        </div>
+                      </div>
                     )}
                   </div>
                 )
             )}
 
           {displayNewFolder && (
-            <input
-              value={newFolderName || ""}
-              onChange={(e: any) => setNewFolderName(e.target.value)}
-              onKeyDown={async (e: any) => {
-                if (e.key === "Enter") {
-                  let newFolder: Folder = {
-                    folder_id: nanoid(10),
-                    folder_name: newFolderName || "",
-                    is_favourite: false,
-                    is_expanded: false,
-                  };
-
-                  await HandleCreateFolder(newFolder);
-                } else if (e.key === "Escape") {
-                  setNewFolderName("");
-                  setDisplayNewFolder(false);
-                }
-              }}
-              placeholder="New Folder"
-              className="p-1 border rounded-md bg-inherit outline-none placeholder:text-gray-400"
-            />
+            <div className="ml-4 my-2">
+              <div className="flex items-center bg-neutral-800 rounded-md overflow-hidden border border-neutral-700 shadow-md">
+                <input
+                  value={newFolderName || ""}
+                  onChange={(e: any) => setNewFolderName(e.target.value)}
+                  onKeyDown={async (e: any) => {
+                    if (e.key === "Enter") {
+                      let newFolder: Folder = {
+                        folder_id: nanoid(10),
+                        folder_name: newFolderName || "",
+                        is_favourite: false,
+                        is_expanded: false,
+                      };
+                      await HandleCreateFolder(newFolder);
+                    } else if (e.key === "Escape") {
+                      setNewFolderName("");
+                      setDisplayNewFolder(false);
+                    }
+                  }}
+                  placeholder="New Folder"
+                  className="p-2 flex-grow bg-transparent outline-none placeholder:text-neutral-500 text-gray-200"
+                  autoFocus
+                />
+                <button 
+                  onClick={async () => {
+                    let newFolder: Folder = {
+                      folder_id: nanoid(10),
+                      folder_name: newFolderName || "",
+                      is_favourite: false,
+                      is_expanded: false,
+                    };
+                    await HandleCreateFolder(newFolder);
+                  }}
+                  className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
           )}
         </div>
       )}
